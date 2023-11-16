@@ -1,9 +1,9 @@
 {
   "files": {
     "main.css": "/sc_land/static/css/main.4ad6af91.css",
-    "main.js": "/sc_land/static/js/main.3a4b6f20.js",
-    "static/js/6935.2af43517.chunk.js": "/sc_land/static/js/6935.2af43517.chunk.js",
-    "static/js/3583.fed24a28.chunk.js": "/sc_land/static/js/3583.fed24a28.chunk.js",
+    "main.js": "/sc_land/static/js/main.c887a043.js",
+    "static/js/6935.7299cf6a.chunk.js": "/sc_land/static/js/6935.7299cf6a.chunk.js",
+    "static/js/3583.758cb495.chunk.js": "/sc_land/static/js/3583.758cb495.chunk.js",
     "static/js/6077.01e913bc.chunk.js": "/sc_land/static/js/6077.01e913bc.chunk.js",
     "static/js/3364.8d263599.chunk.js": "/sc_land/static/js/3364.8d263599.chunk.js",
     "static/js/8895.6c651716.chunk.js": "/sc_land/static/js/8895.6c651716.chunk.js",
@@ -523,9 +523,9 @@
     "static/media/SM-Slider_TrackBackground_hover.svg": "/sc_land/static/media/SM-Slider_TrackBackground_hover.5dcf34ac7d59f98735ad.svg",
     "static/media/SM-Slider_TrackBackground_idle.svg": "/sc_land/static/media/SM-Slider_TrackBackground_idle.cc7bd7014a003ba1844f.svg",
     "main.4ad6af91.css.map": "/sc_land/static/css/main.4ad6af91.css.map",
-    "main.3a4b6f20.js.map": "/sc_land/static/js/main.3a4b6f20.js.map",
-    "6935.2af43517.chunk.js.map": "/sc_land/static/js/6935.2af43517.chunk.js.map",
-    "3583.fed24a28.chunk.js.map": "/sc_land/static/js/3583.fed24a28.chunk.js.map",
+    "main.c887a043.js.map": "/sc_land/static/js/main.c887a043.js.map",
+    "6935.7299cf6a.chunk.js.map": "/sc_land/static/js/6935.7299cf6a.chunk.js.map",
+    "3583.758cb495.chunk.js.map": "/sc_land/static/js/3583.758cb495.chunk.js.map",
     "6077.01e913bc.chunk.js.map": "/sc_land/static/js/6077.01e913bc.chunk.js.map",
     "3364.8d263599.chunk.js.map": "/sc_land/static/js/3364.8d263599.chunk.js.map",
     "8895.6c651716.chunk.js.map": "/sc_land/static/js/8895.6c651716.chunk.js.map",
@@ -938,6 +938,6 @@
   },
   "entrypoints": [
     "static/css/main.4ad6af91.css",
-    "static/js/main.3a4b6f20.js"
+    "static/js/main.c887a043.js"
   ]
 }
