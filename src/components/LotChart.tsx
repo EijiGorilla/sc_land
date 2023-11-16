@@ -12,10 +12,10 @@ import {
   generateLotData,
   generateLotMoaData,
   generateLotNumber,
-  generatePermitEnter,
   thousands_separators,
   statusLotChartQuery,
   statusMoaLotChartQuery,
+  generateHandedOver,
 } from '../Query';
 import '../App.css';
 
@@ -54,7 +54,7 @@ const LotChart = ({ municipal, barangay }: any) => {
   const chartID = 'pie-two';
 
   const [lotNumber, setLotNumber] = useState([]);
-  const [pteNumber, setPteNumber] = useState([]);
+  const [handedOverNumber, setHandedOverNumber] = useState([]);
 
   // 2.Mode of Acquisition
   const barSeriesRef = useRef<unknown | any | undefined>({});
@@ -86,8 +86,8 @@ const LotChart = ({ municipal, barangay }: any) => {
       setLotNumber(response);
     });
 
-    generatePermitEnter().then((response: any) => {
-      setPteNumber(response);
+    generateHandedOver().then((response: any) => {
+      setHandedOverNumber(response);
     });
 
     // Mode of Acquisition
@@ -555,15 +555,15 @@ const LotChart = ({ municipal, barangay }: any) => {
       ></div>
       <div className="pteNumberImage">
         <div>
-          <div className="permitToEnterLabel">PERMIT-TO-ENTER</div>
+          <div className="permitToEnterLabel">HANDED-OVER</div>
           <br />
           <br />
           {/* if pte is 'Infinity, display 'N/A' else  */}
-          {pteNumber[0] === 'Infinity' ? (
+          {handedOverNumber[0] === 'Infinity' ? (
             <b className="permitToEnterNumber">N/A</b>
           ) : (
             <b className="permitToEnterNumber">
-              {pteNumber[0]}% ({thousands_separators(pteNumber[1])})
+              {handedOverNumber[0]}% ({thousands_separators(handedOverNumber[1])})
             </b>
           )}
         </div>

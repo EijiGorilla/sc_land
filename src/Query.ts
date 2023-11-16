@@ -321,30 +321,30 @@ export async function generateLotNumber() {
 }
 
 // For Permit-to-Enter
-export async function generatePermitEnter() {
-  var total_pte_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN PTE = 1 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_pte_lot',
+export async function generateHandedOver() {
+  var total_handedover_lot = new StatisticDefinition({
+    onStatisticField: 'CASE WHEN HandedOver = 1 THEN 1 ELSE 0 END',
+    outStatisticFieldName: 'total_handedover_lot',
     statisticType: 'sum',
   });
 
   var total_lot_N = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA >= 1 THEN 1 ELSE 0 END',
+    onStatisticField: 'LotID',
     outStatisticFieldName: 'total_lot_N',
-    statisticType: 'sum',
+    statisticType: 'count',
   });
 
   var query = lotLayer.createQuery();
   //query.where = 'LotID IS NOT NULL';
-  query.outStatistics = [total_pte_lot, total_lot_N];
+  query.outStatistics = [total_handedover_lot, total_lot_N];
   query.returnGeometry = true;
 
   return lotLayer.queryFeatures(query).then((response: any) => {
     var stats = response.features[0].attributes;
-    const pte = stats.total_pte_lot;
+    const handedover = stats.total_handedover_lot;
     const totaln = stats.total_lot_N;
-    const percent = ((pte / totaln) * 100).toFixed(0);
-    return [percent, totaln];
+    const percent = ((handedover / totaln) * 100).toFixed(0);
+    return [percent, handedover];
   });
 }
 
