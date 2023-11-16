@@ -14,19 +14,10 @@ import {
   generateLotNumber,
   generatePermitEnter,
   thousands_separators,
+  statusLotChartQuery,
+  statusMoaLotChartQuery,
 } from '../Query';
 import '../App.css';
-
-const statusLot: string[] = [
-  'Handed-Over',
-  'Paid',
-  'For Payment Processing',
-  'For Legal Pass',
-  'For Appraisal/Offer to Buy',
-  'For Expro',
-];
-
-const statusMOA = ['For Negotiation', 'Expropriation', 'Donation', 'CA 141', 'No Need to Acquire'];
 
 //https://codesandbox.io/s/amcharts5-react-demo-forked-gid7b0?from-embed=&file=/src/App.js:271-276
 // https://github.com/reactchartjs/react-chartjs-2/blob/master/src/chart.tsx
@@ -77,9 +68,11 @@ const LotChart = ({ municipal, barangay }: any) => {
   const queryBarangay = "Barangay = '" + barangay + "'";
   const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
 
-  if (municipal && !barangay) {
+  if (!municipal) {
+    lotLayer.definitionExpression = '1=1';
+  } else if (municipal && !barangay) {
     lotLayer.definitionExpression = queryMunicipality;
-  } else if (barangay) {
+  } else {
     lotLayer.definitionExpression = queryMunicipalBarangay;
   }
 
@@ -165,25 +158,12 @@ const LotChart = ({ municipal, barangay }: any) => {
     // EventDispatcher is disposed at SpriteEventDispatcher...
     // It looks like this error results from clicking events
     pieSeries.slices.template.events.on('click', (ev) => {
-      var Selected: any = ev.target.dataItem?.dataContext;
-      var Category: string = Selected.category;
+      const selected: any = ev.target.dataItem?.dataContext;
+      const categorySelected: string = selected.category;
+      const find = statusLotChartQuery.find((emp: any) => emp.category === categorySelected);
+      const statusSelect = find?.value;
 
       var highlightSelect: any;
-      var SelectedStatus: number | null;
-
-      if (Category === statusLot[0]) {
-        SelectedStatus = 0;
-      } else if (Category === statusLot[1]) {
-        SelectedStatus = 1;
-      } else if (Category === statusLot[2]) {
-        SelectedStatus = 2;
-      } else if (Category === statusLot[3]) {
-        SelectedStatus = 3;
-      } else if (Category === statusLot[4]) {
-        SelectedStatus = 4;
-      } else if (Category === statusLot[5]) {
-        SelectedStatus = 5;
-      }
 
       var query = lotLayer.createQuery();
 
@@ -225,7 +205,15 @@ const LotChart = ({ municipal, barangay }: any) => {
           }); // End of queryFeatures
 
           layerView.filter = new FeatureFilter({
-            where: 'StatusLA = ' + SelectedStatus,
+            where: 'StatusLA = ' + statusSelect,
+          });
+
+          // For initial state, we need to add this
+          view.on('click', () => {
+            layerView.filter = new FeatureFilter({
+              where: undefined,
+            });
+            highlightSelect !== undefined ? highlightSelect.remove() : console.log('');
           });
         }); // End of view.whenLayerView
       }); // End of view.whenv
@@ -447,23 +435,12 @@ const LotChart = ({ municipal, barangay }: any) => {
         */
 
     series.columns.template.events.on('click', function (ev) {
-      var Selected: any = ev.target.dataItem?.dataContext;
-      var Category: string = Selected.category;
+      const selected: any = ev.target.dataItem?.dataContext;
+      const categorySelect: string = selected.category;
+      const find = statusMoaLotChartQuery.find((emp: any) => emp.category === categorySelect);
+      const statusSelect = find?.value;
 
       var highlightSelect: any;
-      var SelectedStatus: number | null;
-
-      if (Category === statusMOA[0]) {
-        SelectedStatus = 1;
-      } else if (Category === statusMOA[1]) {
-        SelectedStatus = 2;
-      } else if (Category === statusMOA[2]) {
-        SelectedStatus = 3;
-      } else if (Category === statusMOA[3]) {
-        SelectedStatus = 4;
-      } else if (Category === statusMOA[4]) {
-        SelectedStatus = 5;
-      }
 
       var query = lotLayer.createQuery();
       view.whenLayerView(lotLayer).then(function (layerView) {
@@ -502,7 +479,15 @@ const LotChart = ({ municipal, barangay }: any) => {
           });
         });
         layerView.filter = new FeatureFilter({
-          where: 'MoA = ' + SelectedStatus,
+          where: 'MoA = ' + statusSelect,
+        });
+
+        // For initial state, we need to add this
+        view.on('click', () => {
+          layerView.filter = new FeatureFilter({
+            where: undefined,
+          });
+          highlightSelect !== undefined ? highlightSelect.remove() : console.log('');
         });
       }); // End of whenLayerView
     });

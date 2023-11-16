@@ -13,18 +13,9 @@ import {
   generateStrucNumber,
   generateStructureData,
   thousands_separators,
+  statusStructureChartQuery,
+  statusMoaStructureChartQuery,
 } from '../Query';
-
-const statusStructure = [
-  'Dismantling/Clearing',
-  'Paid',
-  'For Payment Processing',
-  'For Legal Pass',
-  'For Appraisal/Offer to Compensate',
-  'LBP Account Opening',
-];
-
-const statusMoaStructure = ['For Negotiation', 'Expropriation', 'Donation', 'No Need to Acquire'];
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -73,9 +64,11 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
   const queryBarangay = "Barangay = '" + barangay + "'";
   const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
 
-  if (municipal && !barangay) {
+  if (!municipal) {
+    structureLayer.definitionExpression = '1=1';
+  } else if (municipal && !barangay) {
     structureLayer.definitionExpression = queryMunicipality;
-  } else if (barangay) {
+  } else {
     structureLayer.definitionExpression = queryMunicipalBarangay;
   }
 
@@ -151,26 +144,12 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
     // EventDispatcher is disposed at SpriteEventDispatcher...
     // It looks like this error results from clicking events
     pieSeries.slices.template.events.on('click', (ev) => {
-      var Selected: any = ev.target.dataItem?.dataContext;
-      var Category: string = Selected.category;
+      const selected: any = ev.target.dataItem?.dataContext;
+      const categorySelect: string = selected.category;
+      const find = statusStructureChartQuery.find((emp: any) => emp.category === categorySelect);
+      const statusSelect = find?.value;
 
       var highlightSelect: any;
-      var SelectedStatus: number | null;
-
-      if (Category === statusStructure[0]) {
-        SelectedStatus = 1;
-      } else if (Category === statusStructure[1]) {
-        SelectedStatus = 2;
-      } else if (Category === statusStructure[2]) {
-        SelectedStatus = 3;
-      } else if (Category === statusStructure[3]) {
-        SelectedStatus = 4;
-      } else if (Category === statusStructure[4]) {
-        SelectedStatus = 5;
-      } else if (Category === statusStructure[5]) {
-        SelectedStatus = 6;
-      }
-
       var query = structureLayer.createQuery();
 
       view.when(function () {
@@ -211,7 +190,7 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
           }); // End of queryFeatures
 
           layerView.filter = new FeatureFilter({
-            where: 'StatusStruc = ' + SelectedStatus,
+            where: 'StatusStruc = ' + statusSelect,
           });
         }); // End of view.whenLayerView
       }); // End of view.whenv
@@ -434,21 +413,12 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
     */
 
     series.columns.template.events.on('click', function (ev) {
-      var Selected: any = ev.target.dataItem?.dataContext;
-      var Category: string = Selected.category;
+      const selected: any = ev.target.dataItem?.dataContext;
+      const categorySelect: string = selected.category;
+      const find = statusMoaStructureChartQuery.find((emp: any) => emp.category === categorySelect);
+      const statusSelect = find?.value;
 
       var highlightSelect: any;
-      var SelectedStatus: number | null;
-
-      if (Category === statusMoaStructure[0]) {
-        SelectedStatus = 1;
-      } else if (Category === statusMoaStructure[1]) {
-        SelectedStatus = 2;
-      } else if (Category === statusMoaStructure[2]) {
-        SelectedStatus = 3;
-      } else if (Category === statusMoaStructure[3]) {
-        SelectedStatus = 4;
-      }
 
       var query = structureLayer.createQuery();
       view.whenLayerView(structureLayer).then(function (layerView) {
@@ -487,7 +457,7 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
           });
         });
         layerView.filter = new FeatureFilter({
-          where: 'MoA = ' + SelectedStatus,
+          where: 'MoA = ' + statusSelect,
         });
       }); // End of whenLayerView
     });

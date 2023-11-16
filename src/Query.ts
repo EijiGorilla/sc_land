@@ -8,21 +8,174 @@ import { view } from './Scene';
 
 // For Lot Pie Chart
 const statusLot: string[] = [
-  'Handed-Over',
   'Paid',
   'For Payment Processing',
   'For Legal Pass',
   'For Appraisal/Offer to Buy',
   'For Expro',
+  'With PTE',
+  'For Harmonization',
+];
+
+export const statusLotChartQuery = [
+  {
+    category: statusLot[0],
+    value: 1,
+  },
+  {
+    category: statusLot[1],
+    value: 2,
+  },
+  {
+    category: statusLot[2],
+    value: 3,
+  },
+  {
+    category: statusLot[3],
+    value: 4,
+  },
+  {
+    category: statusLot[4],
+    value: 5,
+  },
+  {
+    category: statusLot[5],
+    value: 6,
+  },
+  {
+    category: statusLot[6],
+    value: 7,
+  },
+];
+
+// For Lot MoA Chart
+const statusMOA: String[] = [
+  'For Negotiation',
+  'Expropriation',
+  'Donation',
+  'CA 141',
+  'No Need to Acquire',
+];
+
+export const statusMoaLotChartQuery = [
+  {
+    category: statusMOA[0],
+    value: 1,
+  },
+  {
+    category: statusMOA[1],
+    value: 2,
+  },
+  {
+    category: statusMOA[2],
+    value: 3,
+  },
+  {
+    category: statusMOA[3],
+    value: 4,
+  },
+  {
+    category: statusMOA[4],
+    value: 5,
+  },
+];
+
+// For Structure Pie Chart
+const statusStructure = [
+  'Dismantling/Clearing',
+  'Paid',
+  'For Payment Processing',
+  'For Legal Pass',
+  'For Appraisal/Offer to Compensate',
+  'LBP Account Opening',
+];
+
+export const statusStructureChartQuery = [
+  {
+    category: statusStructure[0],
+    value: 1,
+  },
+  {
+    category: statusStructure[1],
+    value: 2,
+  },
+  {
+    category: statusStructure[2],
+    value: 3,
+  },
+  {
+    category: statusStructure[3],
+    value: 4,
+  },
+  {
+    category: statusStructure[4],
+    value: 5,
+  },
+  {
+    category: statusStructure[5],
+    value: 6,
+  },
+];
+
+const statusMoaStructure = ['For Negotiation', 'Expropriation', 'Donation', 'No Need to Acquire'];
+
+export const statusMoaStructureChartQuery = [
+  {
+    category: statusMoaStructure[0],
+    value: 1,
+  },
+  {
+    category: statusMoaStructure[1],
+    value: 2,
+  },
+  {
+    category: statusMoaStructure[2],
+    value: 3,
+  },
+  {
+    category: statusMoaStructure[3],
+    value: 4,
+  },
+];
+
+// Non-Land Owner
+const statusNlo = [
+  'Relocated',
+  'Paid',
+  'For Payment Processing',
+  'For Legal Pass',
+  'For Appraisal/OtC/Requirements for Other Entitlements',
+  'LBP Account Opening',
+];
+
+export const statusNloChartQuery = [
+  {
+    category: statusNlo[0],
+    value: 1,
+  },
+  {
+    category: statusNlo[1],
+    value: 2,
+  },
+  {
+    category: statusNlo[2],
+    value: 3,
+  },
+  {
+    category: statusNlo[3],
+    value: 4,
+  },
+  {
+    category: statusNlo[4],
+    value: 5,
+  },
+  {
+    category: statusNlo[5],
+    value: 6,
+  },
 ];
 
 export async function generateLotData() {
-  var total_handedover_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA = 0 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_handedover_lot',
-    statisticType: 'sum',
-  });
-
   var total_paid_lot = new StatisticDefinition({
     onStatisticField: 'CASE WHEN StatusLA = 1 THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_paid_lot',
@@ -53,67 +206,88 @@ export async function generateLotData() {
     statisticType: 'sum',
   });
 
+  var total_pte_lot = new StatisticDefinition({
+    onStatisticField: 'CASE WHEN StatusLA = 6 THEN 1 ELSE 0 END',
+    outStatisticFieldName: 'total_pte_lot',
+    statisticType: 'sum',
+  });
+
+  var total_harmo_lot = new StatisticDefinition({
+    onStatisticField: 'CASE WHEN StatusLA = 7 THEN 1 ELSE 0 END',
+    outStatisticFieldName: 'total_harmo_lot',
+    statisticType: 'sum',
+  });
+
   var query = lotLayer.createQuery();
   query.outStatistics = [
-    total_handedover_lot,
     total_paid_lot,
     total_payp_lot,
     total_legalpass_lot,
     total_otb_lot,
     total_expro_lot,
+    total_pte_lot,
+    total_harmo_lot,
   ];
   query.returnGeometry = true;
 
   return lotLayer.queryFeatures(query).then((response: any) => {
     var stats = response.features[0].attributes;
-    const handedover = stats.total_handedover_lot;
     const paid = stats.total_paid_lot;
     const payp = stats.total_payp_lot;
     const legalpass = stats.total_legalpass_lot;
     const otb = stats.total_otb_lot;
     const expro = stats.total_expro_lot;
+    const pte = stats.total_pte_lot;
+    const harmo = stats.total_harmo_lot;
 
     const compile = [
       {
         category: statusLot[0],
-        value: handedover,
-        sliceSettings: {
-          fill: am5.color('#00c5ff'),
-        },
-      },
-      {
-        category: statusLot[1],
         value: paid,
         sliceSettings: {
           fill: am5.color('#70ad47'),
         },
       },
       {
-        category: statusLot[2],
+        category: statusLot[1],
         value: payp,
         sliceSettings: {
           fill: am5.color('#0070ff'),
         },
       },
       {
-        category: statusLot[3],
+        category: statusLot[2],
         value: legalpass,
         sliceSettings: {
           fill: am5.color('#ffff00'),
         },
       },
       {
-        category: statusLot[4],
+        category: statusLot[3],
         value: otb,
         sliceSettings: {
           fill: am5.color('#ffaa00'),
         },
       },
       {
-        category: statusLot[5],
+        category: statusLot[4],
         value: expro,
         sliceSettings: {
           fill: am5.color('#ff0000'),
+        },
+      },
+      {
+        category: statusLot[5],
+        value: pte,
+        sliceSettings: {
+          fill: am5.color('#70AD47'),
+        },
+      },
+      {
+        category: statusLot[6],
+        value: harmo,
+        sliceSettings: {
+          fill: am5.color('#B2B2B2'),
         },
       },
     ];
@@ -173,15 +347,6 @@ export async function generatePermitEnter() {
     return [percent, totaln];
   });
 }
-
-// For Lot MoA Chart
-const statusMOA: String[] = [
-  'For Negotiation',
-  'Expropriation',
-  'Donation',
-  'CA 141',
-  'No Need to Acquire',
-];
 
 export async function generateLotMoaData() {
   var total_nego_lot = new StatisticDefinition({
@@ -316,16 +481,6 @@ export async function generateLotProgress(municipality: any, barangay: any) {
   });
 }
 
-// Structure
-const statusStructure = [
-  'Dismantling/Clearing',
-  'Paid',
-  'For Payment Processing',
-  'For Legal Pass',
-  'For Appraisal/Offer to Compensate',
-  'LBP Account Opening',
-];
-
 export async function generateStructureData() {
   var total_clear_lot = new StatisticDefinition({
     onStatisticField: 'CASE WHEN StatusStruc = 1 THEN 1 ELSE 0 END',
@@ -458,8 +613,6 @@ export async function generateStrucNumber() {
   });
 }
 
-const statusMoaStructure = ['For Negotiation', 'Expropriation', 'Donation', 'No Need to Acquire'];
-
 export async function generateStrucMoaData() {
   var total_nego_lot = new StatisticDefinition({
     onStatisticField: 'CASE WHEN MoA = 1 THEN 1 ELSE 0 END',
@@ -517,15 +670,6 @@ export async function generateStrucMoaData() {
   });
 }
 
-// Non-Land Owner
-const statusNlo = [
-  'Relocated',
-  'Paid',
-  'For Payment Processing',
-  'For Legal Pass',
-  'For Appraisal/OtC/Requirements for Other Entitlements',
-  'LBP Account Opening',
-];
 export async function generateNloData() {
   var total_relocated_lot = new StatisticDefinition({
     onStatisticField: 'CASE WHEN StatusRC = 1 THEN 1 ELSE 0 END',

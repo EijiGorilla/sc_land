@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, memo } from 'react';
-import { nloLayer, occupancyLayer } from '../layers';
+import { nloLayer } from '../layers';
 import { view } from '../Scene';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import Query from '@arcgis/core/rest/support/Query';
@@ -7,16 +7,12 @@ import * as am5 from '@amcharts/amcharts5';
 import * as am5percent from '@amcharts/amcharts5/percent';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import am5themes_Responsive from '@amcharts/amcharts5/themes/Responsive';
-import { generateNloData, generateNloNumber, thousands_separators } from '../Query';
-
-const statusNlo = [
-  'Relocated',
-  'Paid',
-  'For Payment Processing',
-  'For Legal Pass',
-  'For Appraisal/OtC/Requirements for Other Entitlements',
-  'LBP Account Opening',
-];
+import {
+  generateNloData,
+  generateNloNumber,
+  statusNloChartQuery,
+  thousands_separators,
+} from '../Query';
 
 //https://codesandbox.io/s/amcharts5-react-demo-forked-gid7b0?from-embed=&file=/src/App.js:271-276
 // https://github.com/reactchartjs/react-chartjs-2/blob/master/src/chart.tsx
@@ -59,12 +55,12 @@ const NloChart = memo(({ municipal, barangay }: any) => {
   const queryBarangay = "Barangay = '" + barangay + "'";
   const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
 
-  if (municipal && !barangay) {
+  if (!municipal) {
+    nloLayer.definitionExpression = '1=1';
+  } else if (municipal && !barangay) {
     nloLayer.definitionExpression = queryMunicipality;
-    occupancyLayer.definitionExpression = queryMunicipality;
-  } else if (barangay) {
+  } else {
     nloLayer.definitionExpression = queryMunicipalBarangay;
-    occupancyLayer.definitionExpression = queryMunicipalBarangay;
   }
 
   useEffect(() => {
@@ -135,25 +131,12 @@ const NloChart = memo(({ municipal, barangay }: any) => {
     // EventDispatcher is disposed at SpriteEventDispatcher...
     // It looks like this error results from clicking events
     pieSeries.slices.template.events.on('click', (ev) => {
-      var Selected: any = ev.target.dataItem?.dataContext;
-      var Category: string = Selected.category;
+      const selected: any = ev.target.dataItem?.dataContext;
+      const categorySelect: string = selected.category;
+      const find = statusNloChartQuery.find((emp: any) => emp.category === categorySelect);
+      const typeSelect = find?.value;
 
       var highlightSelect: any;
-      var SelectedStatus: number | null;
-
-      if (Category === statusNlo[0]) {
-        SelectedStatus = 1;
-      } else if (Category === statusNlo[1]) {
-        SelectedStatus = 2;
-      } else if (Category === statusNlo[2]) {
-        SelectedStatus = 3;
-      } else if (Category === statusNlo[3]) {
-        SelectedStatus = 4;
-      } else if (Category === statusNlo[4]) {
-        SelectedStatus = 5;
-      } else if (Category === statusNlo[5]) {
-        SelectedStatus = 6;
-      }
 
       var query = nloLayer.createQuery();
 
@@ -195,7 +178,7 @@ const NloChart = memo(({ municipal, barangay }: any) => {
           }); // End of queryFeatures
 
           layerView.filter = new FeatureFilter({
-            where: 'StatusLA = ' + SelectedStatus,
+            where: 'StatusLA = ' + typeSelect,
           });
         }); // End of view.whenLayerView
       }); // End of view.whenv

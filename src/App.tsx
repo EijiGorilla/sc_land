@@ -23,12 +23,13 @@ import {
   CalciteList,
   CalciteListItem,
 } from '@esri/calcite-components-react';
-import { getMuniciaplityBarangayPair, zoomToLayer } from './Query';
+import { zoomToLayer } from './Query';
 import LotProgressChart from './components/LotProgressChart';
 import ExpropriationList from './components/ExpropriationList';
 import loadable from '@loadable/component';
 import { lotLayer } from './layers';
 import LotChart from './components/LotChart';
+import { DropDownData } from './customClass';
 
 function App() {
   //**** Set states */
@@ -41,38 +42,24 @@ function App() {
   const [nextWidget, setNextWidget] = useState<undefined | any | unknown>(null);
 
   // For dropdown filter
-  const [initMunicipalBarangay, setInitMunicipalBarangay] = useState([
-    {
-      municipality: '',
-      barangay: [
-        {
-          name: '',
-        },
-      ],
-    },
-  ]);
+  const [initMunicipalBarangay, setInitMunicipalBarangay] = useState([]);
 
-  const [municipality, setMunicipality] = useState(null);
-  const [barangay, setBarangay] = useState(null);
+  const [municipality, setMunicipality] = useState<null | any>(null);
+  const [barangay, setBarangay] = useState<null | any>(null);
   const [barangayList, setBarangayList] = useState([]);
-  const [municipalSelected, setMunicipalSelected] = useState({
-    municipality: '',
-    barangay: [
-      {
-        name: '',
-      },
-    ],
-  });
-  const [barangaySelected, setBarangaySelected] = useState({ name: '' });
 
   // loadable for code splitting
   const NloChart = loadable(() => import('./components/NloChart'));
   const StructureChart = loadable(() => import('./components/StructureChart'));
 
   //**** Create dropdonw list */
-  // Get a pair of municipality and barangay
   useEffect(() => {
-    getMuniciaplityBarangayPair().then((response: any) => {
+    const dropdownData = new DropDownData({
+      featureLayers: [lotLayer],
+      fieldNames: ['Municipality', 'Barangay'],
+    });
+
+    dropdownData.dropDownQuery().then((response: any) => {
       setInitMunicipalBarangay(response);
     });
   }, []);
@@ -84,16 +71,13 @@ function App() {
 
   // handle change event of the Municipality dropdown
   const handleMunicipalityChange = (obj: any) => {
-    setMunicipalSelected(obj);
     setMunicipality(obj);
-    setBarangayList(obj.barangay);
+    setBarangayList(obj.field2);
     setBarangay(null);
-    setBarangaySelected({ name: '' });
   };
 
   // handle change event of the barangay dropdownff
   const handleBarangayChange = (obj: any) => {
-    setBarangaySelected(obj);
     setBarangay(obj);
   };
 
@@ -177,31 +161,31 @@ function App() {
             {/* CalciteTab: Lot */}
             <CalciteTab>
               <LotChart
-                municipal={municipalSelected.municipality}
-                barangay={barangaySelected.name}
+                municipal={municipality === null ? '' : municipality.field1}
+                barangay={barangay === null ? '' : barangay.name}
               />
             </CalciteTab>
             {/* CalciteTab: Structure */}
             <CalciteTab>
               <StructureChart
-                municipal={municipalSelected.municipality}
-                barangay={barangaySelected.name}
+                municipal={municipality === null ? '' : municipality.field1}
+                barangay={barangay === null ? '' : barangay.name}
               />
             </CalciteTab>
 
             {/* CalciteTab: Non-Land Owner */}
             <CalciteTab>
               <NloChart
-                municipal={municipalSelected.municipality}
-                barangay={barangaySelected.name}
+                municipal={municipality === null ? '' : municipality.field1}
+                barangay={barangay === null ? '' : barangay.name}
               />
             </CalciteTab>
 
             {/* CalciteTab: List of Lots under Expropriation */}
             <CalciteTab>
               <ExpropriationList
-                municipal={municipalSelected.municipality}
-                barangay={barangaySelected.name}
+                municipal={municipality === null ? '' : municipality.field1}
+                barangay={barangay === null ? '' : barangay.name}
               />
             </CalciteTab>
           </div>
@@ -229,7 +213,7 @@ function App() {
                 value={municipality}
                 options={initMunicipalBarangay}
                 onChange={handleMunicipalityChange}
-                getOptionLabel={(x: any) => x.municipality}
+                getOptionLabel={(x: any) => x.field1}
                 styles={customstyles}
               />
               <br />
@@ -387,8 +371,8 @@ function App() {
         {/* Lot progress chart is loaded ONLY when charts widget is clicked. */}
         {nextWidget === 'charts' && nextWidget !== activeWidget ? (
           <LotProgressChart
-            municipal={municipalSelected.municipality}
-            barangay={barangaySelected.name}
+            municipal={municipality === null ? '' : municipality.field1}
+            barangay={barangay === null ? '' : barangay.name}
             nextwidget={nextWidget === activeWidget ? null : nextWidget}
           />
         ) : (
