@@ -16,7 +16,7 @@ import {
   chainageLayer,
   pierAccessLayer,
   stationBoxLayer,
-  //stationLayer,
+  stationLayer,
   pierHeadColumnLayer,
   prowLayer,
   strucOwnershipLayer,
@@ -58,7 +58,7 @@ map.add(structureLayer);
 map.add(nloLoOccupancyGroupLayer);
 map.add(alignmentGroupLayer);
 map.add(prowLayer);
-//map.add(stationLayer);
+map.add(stationLayer);
 map.add(pierHeadColumnLayer);
 
 export const view = new SceneView({
