@@ -30,6 +30,7 @@ import loadable from '@loadable/component';
 import { lotLayer } from './layers';
 import LotChart from './components/LotChart';
 import { DropDownData } from './customClass';
+import HandedOverAreaChart from './components/HandedOverAreaChart';
 
 function App() {
   //**** Set states */
@@ -285,6 +286,17 @@ function App() {
             ></CalciteAction>
 
             <CalciteAction
+              data-action-id="handedover-charts"
+              icon="graph-bar-side-by-side"
+              text="Handed-Over Area"
+              id="handedover-charts"
+              onClick={(event: any) => {
+                setNextWidget(event.target.id);
+                setActiveWidget(nextWidget === activeWidget ? null : nextWidget);
+              }}
+            ></CalciteAction>
+
+            <CalciteAction
               data-action-id="information"
               icon="information"
               text="Information"
@@ -333,6 +345,13 @@ function App() {
             hidden
           ></CalcitePanel>
 
+          <CalcitePanel
+            class="handedOverArea-panel"
+            height-scale="l"
+            data-panel-id="handedover-charts"
+            hidden
+          ></CalcitePanel>
+
           <CalcitePanel heading="Description" data-panel-id="information" hidden>
             {nextWidget === 'information' ? (
               <div className="informationDiv">
@@ -375,6 +394,13 @@ function App() {
             barangay={barangay === null ? '' : barangay.name}
             nextwidget={nextWidget === activeWidget ? null : nextWidget}
           />
+        ) : (
+          ''
+        )}
+
+        {/* Handed-Over Area Graph */}
+        {nextWidget === 'handedover-charts' && nextWidget !== activeWidget ? (
+          <HandedOverAreaChart />
         ) : (
           ''
         )}

@@ -481,6 +481,49 @@ export async function generateLotProgress(municipality: any, barangay: any) {
   });
 }
 
+export async function generateHandedOverAreaData() {
+  var total_affected_area = new StatisticDefinition({
+    onStatisticField: 'AffectedArea',
+    outStatisticFieldName: 'total_affected_area',
+    statisticType: 'sum',
+  });
+
+  var total_handedover_area = new StatisticDefinition({
+    onStatisticField: 'HandedOverArea',
+    outStatisticFieldName: 'total_handedover_area',
+    statisticType: 'sum',
+  });
+
+  var query = lotLayer.createQuery();
+  query.where = 'CP IS NOT NULL';
+  query.outStatistics = [total_affected_area, total_handedover_area];
+  query.orderByFields = ['CP'];
+  query.returnGeometry = true;
+  query.groupByFieldsForStatistics = ['CP'];
+
+  return lotLayer.queryFeatures(query).then((response: any) => {
+    var stats = response.features;
+    const data = stats.map((result: any, index: any) => {
+      const attributes = result.attributes;
+      const affected = attributes.total_affected_area;
+      const handedOver = attributes.total_handedover_area;
+      const cp = attributes.CP;
+
+      const percent = ((handedOver / affected) * 100).toFixed(0);
+
+      return Object.assign(
+        {},
+        {
+          category: cp,
+          value: percent,
+        },
+      );
+    });
+
+    return data;
+  });
+}
+
 export async function generateStructureData() {
   var total_clear_lot = new StatisticDefinition({
     onStatisticField: 'CASE WHEN StatusStruc = 1 THEN 1 ELSE 0 END',
