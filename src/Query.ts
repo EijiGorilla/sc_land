@@ -836,61 +836,6 @@ export async function generateNloNumber() {
   });
 }
 
-// For dropdown list
-export async function getMuniciaplityBarangayPair() {
-  var query = lotLayer.createQuery();
-  // eslint-disable-next-line no-useless-concat
-  query.where = 'Barangay IS NOT NULL' + ' AND ' + 'Municipality IS NOT NULL';
-  query.outFields = ['Municipality', 'Barangay'];
-  query.groupByFieldsForStatistics = ['Municipality', 'Barangay'];
-
-  return lotLayer.queryFeatures(query).then((response: any) => {
-    const values = response.features.map((result: any, index: number) => {
-      const municipal = result.attributes.Municipality;
-      const barang = result.attributes.Barangay;
-
-      return Object.assign({
-        municipality: municipal,
-        barangay: barang,
-      });
-    });
-
-    const municipalSelect = values
-      .map((item: any) => item.municipality)
-      .filter((municipality: any, index: any, emp: any) => emp.indexOf(municipality) === index);
-
-    const pair = values.filter(
-      (val: any, index: any) =>
-        values.findIndex(
-          (item: any) => item.barangay === val.barangay && item.municipality === val.municipality,
-        ) === index,
-    );
-
-    const finalArray = municipalSelect.map((municipal: string, index: number) => {
-      let temp: Array<string> = [];
-
-      // Find barangay(s) corresponding to each municipality
-      const findBarangay = pair.filter((emp: any) => emp.municipality === municipal);
-
-      // Create an array of barangays correpsonding to each municipality
-      for (var j: number = 0; j < findBarangay.length; j++) {
-        const barangays = findBarangay[j].barangay;
-        const OBJ = Object.assign({
-          name: barangays,
-        });
-        temp.push(OBJ);
-      }
-
-      // return the array of collected barangays to an array of municipality
-      return Object.assign({
-        municipality: municipal,
-        barangay: temp.length === 0 ? [{ name: '' }] : temp,
-      });
-    });
-    return finalArray;
-  }); // end of qureyFeatures
-}
-
 // Thousand separators function
 export function thousands_separators(num: any) {
   if (num) {

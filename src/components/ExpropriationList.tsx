@@ -18,6 +18,7 @@ import {
 import { view } from '../Scene';
 
 // Zoom in to selected lot from expropriation list
+let highlightSelect: any;
 function resultClickHandler(event: any) {
   var queryExtent = new Query({
     objectIds: [event.target.value],
@@ -30,7 +31,7 @@ function resultClickHandler(event: any) {
         zoom: 17,
       });
   });
-  let highlightSelect: any;
+
   view.whenLayerView(lotLayer).then((layerView: any) => {
     highlightSelect && highlightSelect.remove();
     highlightSelect = layerView.highlight([event.target.value]);
