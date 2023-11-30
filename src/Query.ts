@@ -245,7 +245,7 @@ export async function generateLotData() {
         category: statusLot[0],
         value: paid,
         sliceSettings: {
-          fill: am5.color('#70ad47'),
+          fill: am5.color('#00734d'),
         },
       },
       {

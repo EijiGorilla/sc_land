@@ -431,7 +431,7 @@ let customContentLot = new CustomContent({
     return `<ul><li>Handed-Over Area: <b>${handOverArea} %</b></li><br>
     <li>Hand-Over Date: <b>${date}</b></li><br>
               <li>Status:           <b>${
-                statusLot >= 0 ? lotStatusArray[statusLot] : ''
+                statusLot >= 0 ? lotStatusArray[statusLot - 1] : ''
               }</b></li><br>
               <li>Land Use:         <b>${landUse >= 1 ? landUseArray[landUse - 1] : ''}</b></li><br>
               <li>Municipality:     <b>${municipal}</b></li><br>
