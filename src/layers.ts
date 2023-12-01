@@ -355,7 +355,7 @@ let lotLayerRenderer = new UniqueValueRenderer({
     {
       // All features with value of "North" will be blue
       value: 6,
-      label: 'For PTE',
+      label: 'With PTE',
       symbol: new SimpleFillSymbol({
         color: colorLotReqs[5],
       }),

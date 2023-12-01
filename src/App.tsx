@@ -83,11 +83,6 @@ function App() {
   };
 
   // End of dropdown list
-
-  //https://stackoverflow.com/questions/70832641/react-onclick-event-working-on-twice-clicks-when-clicking-again
-  // if you add activeWidget and nextWidget as dependencies for the following useEffect,
-  // calcitePanel is forced to close when dropdownlist item is changed.
-  // The solution is simply adding no dependencies.
   useEffect(() => {
     if (activeWidget) {
       const actionActiveWidget = document.querySelector(
@@ -144,10 +139,6 @@ function App() {
     singleValue: (defaultStyles: any) => ({ ...defaultStyles, color: '#fff' }),
   };
 
-  // https://developers.arcgis.com/calcite-design-system/resources/frameworks/
-  // --calcite-ui-background: #353535 f
-  // https://developers.arcgis.com/calcite-design-system/foundations/colors/
-  // https://codesandbox.io/examples/package/@esri/calcite-components-react
   return (
     <div>
       <CalciteShell>
