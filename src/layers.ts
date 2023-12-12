@@ -227,10 +227,10 @@ var labelClass = new LabelClass({
           color: 'black',
           size: 0.5,
         },
-        font: {
-          family: 'Ubuntu Mono',
-          //weight: "bold"
-        },
+        // font: {
+        //   family: 'Ubuntu Mono',
+        //   //weight: "bold"
+        // },
       }),
     ],
     verticalOffset: {
@@ -269,7 +269,7 @@ export const stationLayer = new FeatureLayer({
     mode: 'relative-to-ground',
   },
 });
-stationLayer.listMode = 'hide';
+//stationLayer.listMode = 'hide';
 
 /* The colors used for the each transit line */
 var lotIdLabel = new LabelClass({
