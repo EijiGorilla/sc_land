@@ -424,22 +424,14 @@ export async function generateLotMoaData() {
 
 // For monthly progress chart of lot
 export async function generateLotProgress(municipality: any, barangay: any) {
-  var total_count_handedOver_private = new StatisticDefinition({
-    onStatisticField:
-      "CASE WHEN (LandOwner <> 'BASES CONVERSION DEVELOPMENT AUTHORITY' and LandOwner <> 'MANILA RAILROAD COMPANY') THEN 1 ELSE 0 END",
-    outStatisticFieldName: 'total_count_handedOver_private',
-    statisticType: 'sum',
-  });
-
-  var total_count_handedOver_public = new StatisticDefinition({
-    onStatisticField:
-      "CASE WHEN (LandOwner = 'BASES CONVERSION DEVELOPMENT AUTHORITY' or LandOwner = 'MANILA RAILROAD COMPANY') THEN 1 ELSE 0 END",
-    outStatisticFieldName: 'total_count_handedOver_public',
-    statisticType: 'sum',
+  var total_count_lot = new StatisticDefinition({
+    onStatisticField: 'HandedOverDate',
+    outStatisticFieldName: 'total_count_lot',
+    statisticType: 'count',
   });
 
   var query = lotLayer.createQuery();
-  query.outStatistics = [total_count_handedOver_private, total_count_handedOver_public];
+  query.outStatistics = [total_count_lot];
   // eslint-disable-next-line no-useless-concat
   const municipal = municipality;
   const barang = barangay;
@@ -465,15 +457,12 @@ export async function generateLotProgress(municipality: any, barangay: any) {
     const data = stats.map((result: any, index: any) => {
       const attributes = result.attributes;
       const date = attributes.HandedOverDate;
-
-      const privateCount = attributes.total_count_handedOver_private;
-      const publicCount = attributes.total_count_handedOver_public;
+      const total_handedover = attributes.total_count_lot;
 
       // compile in object array
       return Object.assign({
         date: date,
-        private: privateCount,
-        public: publicCount,
+        value: total_handedover,
       });
     });
 
@@ -836,6 +825,31 @@ export async function generateNloNumber() {
   });
 }
 
+export const dateFormat = (inputDate: any, format: any) => {
+  //parse the input date
+  const date = new Date(inputDate);
+
+  //extract the parts of the date
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  //replace the month
+  format = format.replace('MM', month.toString().padStart(2, '0'));
+
+  //replace the year
+  if (format.indexOf('yyyy') > -1) {
+    format = format.replace('yyyy', year.toString());
+  } else if (format.indexOf('yy') > -1) {
+    format = format.replace('yy', year.toString().substr(2, 2));
+  }
+
+  //replace the day
+  format = format.replace('dd', day.toString().padStart(2, '0'));
+
+  return format;
+};
+
 // Thousand separators function
 export function thousands_separators(num: any) {
   if (num) {
@@ -861,6 +875,26 @@ export function zoomToLayer(layer: any) {
 }
 
 export function highlightUrgent(layer: any) {
+  let highlight: any;
+  view.whenLayerView(layer).then((urgentLayerView) => {
+    var query = layer.createQuery();
+    layer.queryFeatures(query).then((results: any) => {
+      const length = results.features.length;
+      let objID = [];
+      for (var i = 0; i < length; i++) {
+        var obj = results.features[i].attributes.OBJECTID;
+        objID.push(obj);
+      }
+
+      if (highlight) {
+        highlight.remove();
+      }
+      highlight = urgentLayerView.highlight(objID);
+    });
+  });
+}
+
+export function highlightLot(layer: any) {
   let highlight: any;
   view.whenLayerView(layer).then((urgentLayerView) => {
     var query = layer.createQuery();

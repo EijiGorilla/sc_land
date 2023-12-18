@@ -3,7 +3,11 @@ import * as am5 from '@amcharts/amcharts5';
 import * as am5xy from '@amcharts/amcharts5/xy';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import am5themes_Responsive from '@amcharts/amcharts5/themes/Responsive';
-import { generateLotProgress } from '../Query';
+import { dateFormat, generateLotProgress } from '../Query';
+import { lotLayer } from '../layers';
+import { view } from '../Scene';
+import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
+import Query from '@arcgis/core/rest/support/Query';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -14,12 +18,7 @@ function maybeDisposeRoot(divId: any) {
   });
 }
 
-//https://www.reddit.com/r/reactjs/comments/xe0sbz/usestate_does_not_update_and_returns_undefined/
-const privateLotColor = '#6ede00';
-const publicLotColor = '#4a99ff';
-
 const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
-  const barSeriesRef = useRef<unknown | any | undefined>({});
   const legendRef = useRef<unknown | any | undefined>({});
   const xAxisRef = useRef<unknown | any | undefined>({});
   const yAxisRef = useRef<unknown | any | undefined>({});
@@ -169,57 +168,95 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
       //fontWeight: "300"
     });
 
-    // check this;
-    // newDataItem = new DataItem(series, dataContext, series._makeDataItem(dataContext));
-    // dataItem is of dataItems
-    // dataContext: dataItem.dataContext
+    // Add series
+    var series = chart.series.push(
+      am5xy.ColumnSeries.new(root, {
+        name: 'Series',
+        xAxis: xAxis,
+        yAxis: yAxis,
+        valueYField: 'value',
+        valueXField: 'date',
+        valueYGrouped: 'sum',
+      }),
+    );
 
-    function makeSeries(name: any, fieldName: any) {
-      // Add series
-      // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
-      var series = chart.series.push(
-        am5xy.ColumnSeries.new(root, {
-          name: name,
-          stacked: true,
-          xAxis: xAxis,
-          yAxis: yAxis,
-          valueYField: fieldName,
-          valueXField: 'date',
-          valueYGrouped: 'sum',
-          fill: fieldName === 'private' ? am5.color(privateLotColor) : am5.color(publicLotColor),
+    series.bullets.push(function () {
+      return am5.Bullet.new(root, {
+        locationY: 1,
+        locationX: 0.5,
+        sprite: am5.Label.new(root, {
+          text: '{valueYTotal}',
+          fill: root.interfaceColors.get('alternativeText'),
+          centerY: 0,
+          centerX: am5.p50,
+          populateText: true,
+          fontSize: 10,
         }),
-      );
-      barSeriesRef.current = series;
-      chart.series.push(series);
-
-      series.columns.template.setAll({
-        tooltipText: '{name}, {categoryX}: {valueY}',
-        tooltipY: am5.percent(10),
-        strokeOpacity: 0,
       });
-      series.data.setAll(lotProgressData);
-      series.appear(1000);
+    });
 
-      // Add Label bullet
-      series.bullets.push(function () {
-        return am5.Bullet.new(root, {
-          locationY: 1,
-          locationX: 0.5,
-          sprite: am5.Label.new(root, {
-            text: '{valueY}',
-            fill: root.interfaceColors.get('alternativeText'),
-            centerY: 0,
-            centerX: am5.p50,
-            populateText: true,
-            fontSize: 10,
-          }),
+    var highlightSelect: any;
+    series.columns.template.events.on('click', (ev) => {
+      const selected: any = ev.target.dataItem?.dataContext;
+      const selectedDate = dateFormat(selected.date, 'yyyy-MM-dd');
+
+      // const qExpression =
+      const qMunicipality = "Municipality = '" + municipal + "'";
+      const qBarangay = "Barangay = '" + barangay + "'";
+      const qMunicipalBarangay = qMunicipality + ' AND ' + qBarangay;
+      const qDate =
+        'HandedOverDate IS NOT NULL' + ' AND ' + "HandedOverDate = date'" + selectedDate + "'";
+
+      var query = lotLayer.createQuery();
+      if (municipal && barangay) {
+        query.where = qDate + ' AND ' + qMunicipalBarangay;
+      } else if (municipal && !barangay) {
+        query.where = qDate + ' AND ' + qMunicipality;
+      } else {
+        query.where = qDate;
+      }
+
+      view.whenLayerView(lotLayer).then((layerView: any) => {
+        lotLayer.queryFeatures(query).then((results: any) => {
+          const RESULT_LENGTH = results.features;
+          const ROW_N = RESULT_LENGTH.length;
+
+          let objID = [];
+          for (var i = 0; i < ROW_N; i++) {
+            var obj = results.features[i].attributes.OBJECTID;
+            objID.push(obj);
+          }
+
+          var queryExt = new Query({
+            objectIds: objID,
+          });
+
+          lotLayer.queryExtent(queryExt).then(function (result) {
+            if (result.extent) {
+              view.goTo(result.extent);
+            }
+          });
+
+          if (highlightSelect) {
+            highlightSelect.remove();
+          }
+          highlightSelect = layerView.highlight(objID);
+
+          view.on('click', function () {
+            layerView.filter = new FeatureFilter({
+              where: undefined,
+            });
+            highlightSelect.remove();
+          });
         });
-      });
-      legend.data.push(series);
-    }
-
-    makeSeries('Private Land', 'private');
-    makeSeries('Public Land', 'public');
+      }); // End of whenLayerView
+    });
+    series.columns.template.setAll({
+      tooltipText: 'Total: {valueY}',
+      tooltipY: am5.percent(10),
+      strokeOpacity: 0,
+    });
+    series.data.setAll(lotProgressData);
 
     chart.appear(1000, 100);
 
@@ -227,13 +264,6 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
       root.dispose();
     };
   }, [chartID, lotProgressData]);
-
-  useEffect(() => {
-    barSeriesRef.current?.data.setAll(lotProgressData);
-
-    xAxisRef.current?.data.setAll(lotProgressData);
-    yAxisRef.current?.data.setAll(lotProgressData);
-  });
 
   return (
     <>
