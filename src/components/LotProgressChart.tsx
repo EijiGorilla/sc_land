@@ -205,6 +205,7 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
       const qBarangay = "Barangay = '" + barangay + "'";
       const qMunicipalBarangay = qMunicipality + ' AND ' + qBarangay;
       const qDate =
+        // eslint-disable-next-line no-useless-concat
         'HandedOverDate IS NOT NULL' + ' AND ' + "HandedOverDate = date'" + selectedDate + "'";
 
       var query = lotLayer.createQuery();
