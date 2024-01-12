@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { lotLayer } from '../layers';
+import { handedOverLotLayer, lotLayer } from '../layers';
 import { view } from '../Scene';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import Query from '@arcgis/core/rest/support/Query';
