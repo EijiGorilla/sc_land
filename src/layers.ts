@@ -137,13 +137,14 @@ export const stationBoxLayer = new FeatureLayer({
 
 /* ROW Layer */
 export const prowLayer = new FeatureLayer({
-  portalItem: {
-    id: '34ce3e5062ea4800b54d5d8fbf4e456b',
-    // portal: {
-    //   url: 'https://gis.railway-sector.com/portal',
-    // },
-  },
-  layerId: 1,
+  url: 'https://services8.arcgis.com/h9TUF6x5VzqLQaYx/arcgis/rest/services/SC_Land_Structure/FeatureServer/1',
+  // portalItem: {
+  //   id: '34ce3e5062ea4800b54d5d8fbf4e456b',
+  //   // portal: {
+  //   //   url: 'https://gis.railway-sector.com/portal',
+  //   // },
+  // },
+  // layerId: 1,
   title: 'PROW',
   popupEnabled: false,
 });
