@@ -428,8 +428,8 @@ let customContentLot = new CustomContent({
     if (handedOverDate) {
       daten = new Date(handedOverDate);
       const year = daten.getFullYear();
-      const month = daten.getMonth();
-      const day = daten.getDay();
+      const month = daten.getMonth() + 1;
+      const day = daten.getDate();
       date = `${year}-${month}-${day}`;
     } else {
       date = 'Undefined';
