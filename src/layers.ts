@@ -389,7 +389,7 @@ const lotStatusArray = [
   'For Legal Pass',
   'For Appraisal/Offer to Buy',
   'For Expro',
-  'For PTE',
+  'With PTE',
   'For Harmonization',
 ];
 
@@ -440,7 +440,7 @@ let customContentLot = new CustomContent({
     //<li>Hand-Over Date: <b>${date}</b></li><br>
 
     return `<ul><li>Handed-Over Area: <b>${handOverArea} %</b></li><br>
-    <li>Hand-Over Date: <b>${date}</b></li><br>
+    <li>Handed-Over Date: <b>${date}</b></li><br>
               <li>Status:           <b>${
                 statusLot >= 0 ? lotStatusArray[statusLot - 1] : ''
               }</b></li><br>
