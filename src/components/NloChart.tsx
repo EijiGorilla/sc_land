@@ -178,7 +178,7 @@ const NloChart = memo(({ municipal, barangay }: any) => {
           }); // End of queryFeatures
 
           layerView.filter = new FeatureFilter({
-            where: 'StatusLA = ' + typeSelect,
+            where: 'StatusRC = ' + typeSelect,
           });
         }); // End of view.whenLayerView
       }); // End of view.whenv

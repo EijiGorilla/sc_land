@@ -43,13 +43,25 @@ function resultClickHandler(event: any) {
   });
 }
 
-const ExpropriationList = (municipal: any, barangay: any) => {
+const ExpropriationList = ({ municipal, barangay }: any) => {
   const [exproItem, setExproItem] = useState<undefined | any>([]);
+  const queryMunicipality = "Municipality = '" + municipal + "'";
+  const queryBarangay = "Barangay = '" + barangay + "'";
+  const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
+  const queryExpro = 'StatusLA = 5';
 
   useEffect(() => {
+    setExproItem([]);
     var query = lotLayer.createQuery();
     query.outFields = ['*'];
-    query.where = 'StatusLA = 5';
+    if (!municipal) {
+      query.where = queryExpro;
+    } else if (municipal && !barangay) {
+      query.where = queryMunicipality + ' AND ' + queryExpro;
+    } else if (barangay) {
+      query.where = queryMunicipalBarangay + ' AND ' + queryExpro;
+    }
+
     query.returnGeometry = true;
     lotLayer.queryFeatures(query).then((result: any) => {
       // eslint-disable-next-line array-callback-return
@@ -75,7 +87,7 @@ const ExpropriationList = (municipal: any, barangay: any) => {
         ]);
       });
     });
-  }, []);
+  }, [municipal, barangay]);
 
   return (
     <>
