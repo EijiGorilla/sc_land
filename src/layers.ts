@@ -70,7 +70,7 @@ export const chainageLayer = new FeatureLayer({
   minScale: 150000,
   maxScale: 0,
   renderer: chainageRenderer,
-  outFields: ['*'],
+
   popupEnabled: false,
 });
 
@@ -129,7 +129,7 @@ export const stationBoxLayer = new FeatureLayer({
   minScale: 150000,
   maxScale: 0,
   title: 'Station Box',
-  outFields: ['*'],
+
   popupEnabled: false,
   elevationInfo: {
     mode: 'on-the-ground',
@@ -194,7 +194,7 @@ export const pnrLayer = new FeatureLayer({
   title: 'Land (PNR)',
   definitionExpression:
     "LandOwner IN ('BASES CONVERSION DEVELOPMENT AUTHORITY','MANILA RAILROAD COMPANY')",
-  outFields: ['*'],
+
   elevationInfo: {
     mode: 'on-the-ground',
   },
@@ -412,7 +412,6 @@ const landUseArray = [
 const endorsedStatus = ['Not Endorsed', 'Endorsed', 'NA'];
 
 let customContentLot = new CustomContent({
-  outFields: ['*'],
   creator: function (event: any) {
     // Extract AsscessDate of clicked pierAccessLayer
     const handedOverDate = event.graphic.attributes.HandedOverDate;
@@ -457,7 +456,6 @@ let customContentLot = new CustomContent({
 });
 
 const templateLot = new PopupTemplate({
-  outFields: ['*'],
   title: 'Lot No.: <b>{LotID}</b>',
   lastEditInfoEnabled: false,
   content: [customContentLot],
@@ -559,7 +557,7 @@ export const handedOverLotLayer = new FeatureLayer({
 //   layerId: 7,
 //   renderer: endorsedLayerRenderer,
 //   labelingInfo: [lotIdLabel],
-//   outFields: ['*'],
+//
 //   title: 'Land Acquisition (Endorsed Status)',
 //   minScale: 150000,
 //   maxScale: 0,
@@ -764,7 +762,7 @@ export const structureLayer = new FeatureLayer({
   layerId: 2,
   title: 'Structure',
   renderer: structureRenderer,
-  outFields: ['*'],
+
   elevationInfo: {
     mode: 'on-the-ground',
   },
@@ -939,7 +937,7 @@ export const nloLayer = new FeatureLayer({
   },
   layerId: 3,
   renderer: nloRenderer,
-  outFields: ['*'],
+
   title: 'NLO (Non-Land Owner)',
   elevationInfo: {
     mode: 'relative-to-scene',
@@ -1022,7 +1020,7 @@ export const strucOwnershipLayer = new FeatureLayer({
   renderer: NLOLORenderer,
   layerId: 2,
   title: 'NLO/LO Ownership (Structure)',
-  outFields: ['*'],
+
   popupEnabled: false,
   elevationInfo: {
     mode: 'on-the-ground',
@@ -1107,7 +1105,7 @@ export const occupancyLayer = new FeatureLayer({
     },
   },
   layerId: 4,
-  outFields: ['*'],
+
   title: 'Occupancy (Structure)',
   renderer: occupancyRenderer,
   elevationInfo: {
@@ -1233,7 +1231,7 @@ export const pierHeadColumnLayer = new FeatureLayer({
   layerId: 4,
   title: 'Pier Head/Column',
   definitionExpression: "Layer <> 'Pier_Head'",
-  outFields: ['*'],
+
   minScale: 150000,
   maxScale: 0,
   renderer: pierHeadRenderer,
@@ -1389,7 +1387,7 @@ export const pierAccessLayer = new FeatureLayer(
     title: 'Pier with Access Date',
     minScale: 150000,
     maxScale: 0,
-    outFields: ['*'],
+
     elevationInfo: {
       mode: 'on-the-ground',
     },
@@ -1471,7 +1469,6 @@ function dateFormat(inputDate: any, format: any) {
 
 // Custom Popup Content for pierAccessLayer
 let customContent = new CustomContent({
-  outFields: ['*'],
   creator: function (event: any) {
     // Extract AsscessDate of clicked pierAccessLayer
     const statsDate = event.graphic.attributes.AccessDate;
@@ -1500,7 +1497,6 @@ let customContent = new CustomContent({
 });
 
 const template = new PopupTemplate({
-  outFields: ['*'],
   title: 'Pier No: <b>{PIER}</b>',
   lastEditInfoEnabled: false,
   content: [customContent],
