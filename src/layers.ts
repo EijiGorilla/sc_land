@@ -412,7 +412,8 @@ const landUseArray = [
 const endorsedStatus = ['Not Endorsed', 'Endorsed', 'NA'];
 
 let customContentLot = new CustomContent({
-  creator: function (event: any) {
+  outFields: ['*'],
+  creator: (event: any) => {
     // Extract AsscessDate of clicked pierAccessLayer
     const handedOverDate = event.graphic.attributes.HandedOverDate;
     const handOverArea = event.graphic.attributes.percentHandedOver;
