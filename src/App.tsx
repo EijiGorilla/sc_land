@@ -22,6 +22,7 @@ import {
   CalcitePanel,
   CalciteList,
   CalciteListItem,
+  CalciteLabel,
 } from '@esri/calcite-components-react';
 import { dateUpdate, zoomToLayer } from './Query';
 import LotProgressChart from './components/LotProgressChart';
@@ -131,6 +132,7 @@ function App() {
         ...styles,
         backgroundColor: isFocused ? '#999999' : isSelected ? '#2b2b2b' : '#2b2b2b',
         color: '#ffffff',
+        fontSize: '0.75rem',
       };
     },
 
@@ -138,9 +140,9 @@ function App() {
       ...defaultStyles,
       backgroundColor: '#2b2b2b',
       borderColor: '#949494',
-      height: 35,
-      width: '170px',
       color: '#ffffff',
+      touchUi: false,
+      fontSize: '0.75rem',
     }),
     singleValue: (defaultStyles: any) => ({ ...defaultStyles, color: '#fff' }),
   };
@@ -148,50 +150,57 @@ function App() {
   return (
     <div>
       <CalciteShell>
-        <CalciteTabs slot="panel-end" style={{ width: '27vw' }}>
-          <div id="chartPanel" style={{ height: '100%' }}>
-            <CalciteTabNav slot="tab-nav" id="thetabs">
-              <CalciteTabTitle class="Land">Land</CalciteTabTitle>
-              <CalciteTabTitle class="Structure">Structure</CalciteTabTitle>
-              <CalciteTabTitle class="NLO">NLO</CalciteTabTitle>
-              <CalciteTabTitle class="ExproList">ExproList</CalciteTabTitle>
-            </CalciteTabNav>
-            {/* CalciteTab: Lot */}
-            <CalciteTab>
-              <LotChart
-                municipal={municipality === null ? '' : municipality.field1}
-                barangay={barangay === null ? '' : barangay.name}
-              />
-            </CalciteTab>
-            {/* CalciteTab: Structure */}
-            <CalciteTab>
-              <StructureChart
-                municipal={municipality === null ? '' : municipality.field1}
-                barangay={barangay === null ? '' : barangay.name}
-              />
-            </CalciteTab>
+        <CalciteTabs slot="panel-end" layout="center" scale="m">
+          <CalciteTabNav slot="title-group" id="thetabs">
+            <CalciteTabTitle class="Land">Land</CalciteTabTitle>
+            <CalciteTabTitle class="Structure">Structure</CalciteTabTitle>
+            <CalciteTabTitle class="NLO">NLO</CalciteTabTitle>
+            <CalciteTabTitle class="ExproList">ExproList</CalciteTabTitle>
+          </CalciteTabNav>
+          {/* CalciteTab: Lot */}
+          <CalciteTab>
+            <LotChart
+              municipal={municipality === null ? '' : municipality.field1}
+              barangay={barangay === null ? '' : barangay.name}
+            />
+          </CalciteTab>
+          {/* CalciteTab: Structure */}
+          <CalciteTab>
+            <StructureChart
+              municipal={municipality === null ? '' : municipality.field1}
+              barangay={barangay === null ? '' : barangay.name}
+            />
+          </CalciteTab>
 
-            {/* CalciteTab: Non-Land Owner */}
-            <CalciteTab>
-              <NloChart
-                municipal={municipality === null ? '' : municipality.field1}
-                barangay={barangay === null ? '' : barangay.name}
-              />
-            </CalciteTab>
+          {/* CalciteTab: Non-Land Owner */}
+          <CalciteTab>
+            <NloChart
+              municipal={municipality === null ? '' : municipality.field1}
+              barangay={barangay === null ? '' : barangay.name}
+            />
+          </CalciteTab>
 
-            {/* CalciteTab: List of Lots under Expropriation */}
-            <CalciteTab>
-              <ExpropriationList
-                municipal={municipality === null ? '' : municipality.field1}
-                barangay={barangay === null ? '' : barangay.name}
-              />
-            </CalciteTab>
-          </div>
+          {/* CalciteTab: List of Lots under Expropriation */}
+          <CalciteTab>
+            <ExpropriationList
+              municipal={municipality === null ? '' : municipality.field1}
+              barangay={barangay === null ? '' : barangay.name}
+            />
+          </CalciteTab>
         </CalciteTabs>
+
+        {/* Header */}
         <header
           slot="header"
           id="header-title"
-          style={{ display: 'flex', width: '100%', height: '70px', padding: '0 1rem' }}
+          style={{
+            display: 'flex',
+            width: '100%',
+            height: '70px',
+            padding: '0 1rem',
+            borderStyle: 'solid',
+            borderWidth: 1,
+          }}
         >
           <img
             src="https://EijiGorilla.github.io/Symbols/Projec_Logo/DOTr_Logo_v2.png"
@@ -203,38 +212,56 @@ function App() {
           <b className="headerTitle">SC LAND ACQUISITION</b>
           <div className="date">{!asOfDate ? '' : 'As of ' + asOfDate}</div>
 
-          <div className="dropdownFilter">
-            <div className="dropdownFilterLayout">
-              <b style={{ color: 'white', margin: 10, fontSize: '0.9vw' }}>Municipality</b>
-              <Select
-                placeholder="Select Municipality"
-                value={municipality}
-                options={initMunicipalBarangay}
-                onChange={handleMunicipalityChange}
-                getOptionLabel={(x: any) => x.field1}
-                styles={customstyles}
-              />
-              <br />
-              <b style={{ color: 'white', margin: 10, fontSize: '0.9vw' }}>Barangay</b>
-              <Select
-                placeholder="Select Barangay"
-                value={barangay}
-                options={barangayList}
-                onChange={handleBarangayChange}
-                getOptionLabel={(x: any) => x.name}
-                styles={customstyles}
-              />
+          {/* Dropdown List */}
+          <div className="dropdownFilterLayout">
+            <div
+              style={{
+                color: 'white',
+                fontSize: '0.85rem',
+                margin: 'auto',
+                paddingRight: '0.5rem',
+              }}
+            >
+              Municipality
             </div>
+            <Select
+              placeholder="Select Municipality"
+              value={municipality}
+              options={initMunicipalBarangay}
+              onChange={handleMunicipalityChange}
+              getOptionLabel={(x: any) => x.field1}
+              styles={customstyles}
+            />
+            <br />
+            <div
+              style={{
+                color: 'white',
+                fontSize: '0.85rem',
+                margin: 'auto',
+                paddingRight: '0.5rem',
+              }}
+            >
+              Barangay
+            </div>
+            <Select
+              placeholder="Select Barangay"
+              value={barangay}
+              options={barangayList}
+              onChange={handleBarangayChange}
+              getOptionLabel={(x: any) => x.name}
+              styles={customstyles}
+            />
           </div>
+
           <img
             src="https://EijiGorilla.github.io/Symbols/Projec_Logo/GCR LOGO.png"
             alt="GCR Logo"
             height={'50px'}
-            width={'75px'}
+            width={'60px'}
             style={{
               marginBottom: 'auto',
               marginTop: 'auto',
-              marginLeft: '1rem',
+              marginLeft: 'auto',
               marginRight: '2rem',
             }}
           />
