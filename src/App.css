@@ -172,8 +172,6 @@ calcite-list {
 .dropdownFilterLayout {
   display: flex;
   flex-direction: row;
-  font-size: 12px;
-  color: black;
   margin: auto;
 }
 

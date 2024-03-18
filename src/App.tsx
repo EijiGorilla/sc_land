@@ -132,7 +132,7 @@ function App() {
         ...styles,
         backgroundColor: isFocused ? '#999999' : isSelected ? '#2b2b2b' : '#2b2b2b',
         color: '#ffffff',
-        fontSize: '0.75rem',
+        // fontSize: '0.75rem',
       };
     },
 
@@ -142,7 +142,7 @@ function App() {
       borderColor: '#949494',
       color: '#ffffff',
       touchUi: false,
-      fontSize: '0.75rem',
+      // fontSize: '0.75rem',
     }),
     singleValue: (defaultStyles: any) => ({ ...defaultStyles, color: '#fff' }),
   };
