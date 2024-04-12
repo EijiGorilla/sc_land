@@ -1,9 +1,9 @@
 {
   "files": {
     "main.css": "/sc_land/static/css/main.1fe942ea.css",
-    "main.js": "/sc_land/static/js/main.54a9ece9.js",
-    "static/js/6935.518d047f.chunk.js": "/sc_land/static/js/6935.518d047f.chunk.js",
-    "static/js/3583.c5f72039.chunk.js": "/sc_land/static/js/3583.c5f72039.chunk.js",
+    "main.js": "/sc_land/static/js/main.a49a3b8c.js",
+    "static/js/6935.02aef25b.chunk.js": "/sc_land/static/js/6935.02aef25b.chunk.js",
+    "static/js/3583.6fe64e74.chunk.js": "/sc_land/static/js/3583.6fe64e74.chunk.js",
     "static/js/6077.01e913bc.chunk.js": "/sc_land/static/js/6077.01e913bc.chunk.js",
     "static/js/3364.8d263599.chunk.js": "/sc_land/static/js/3364.8d263599.chunk.js",
     "static/js/8895.6c651716.chunk.js": "/sc_land/static/js/8895.6c651716.chunk.js",
@@ -523,9 +523,9 @@
     "static/media/SM-Slider_TrackBackground_hover.svg": "/sc_land/static/media/SM-Slider_TrackBackground_hover.5dcf34ac7d59f98735ad.svg",
     "static/media/SM-Slider_TrackBackground_idle.svg": "/sc_land/static/media/SM-Slider_TrackBackground_idle.cc7bd7014a003ba1844f.svg",
     "main.1fe942ea.css.map": "/sc_land/static/css/main.1fe942ea.css.map",
-    "main.54a9ece9.js.map": "/sc_land/static/js/main.54a9ece9.js.map",
-    "6935.518d047f.chunk.js.map": "/sc_land/static/js/6935.518d047f.chunk.js.map",
-    "3583.c5f72039.chunk.js.map": "/sc_land/static/js/3583.c5f72039.chunk.js.map",
+    "main.a49a3b8c.js.map": "/sc_land/static/js/main.a49a3b8c.js.map",
+    "6935.02aef25b.chunk.js.map": "/sc_land/static/js/6935.02aef25b.chunk.js.map",
+    "3583.6fe64e74.chunk.js.map": "/sc_land/static/js/3583.6fe64e74.chunk.js.map",
     "6077.01e913bc.chunk.js.map": "/sc_land/static/js/6077.01e913bc.chunk.js.map",
     "3364.8d263599.chunk.js.map": "/sc_land/static/js/3364.8d263599.chunk.js.map",
     "8895.6c651716.chunk.js.map": "/sc_land/static/js/8895.6c651716.chunk.js.map",
@@ -938,6 +938,6 @@
   },
   "entrypoints": [
     "static/css/main.1fe942ea.css",
-    "static/js/main.54a9ece9.js"
+    "static/js/main.a49a3b8c.js"
   ]
 }
