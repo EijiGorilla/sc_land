@@ -8,6 +8,7 @@ import { lotLayer } from '../layers';
 import { view } from '../Scene';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import Query from '@arcgis/core/rest/support/Query';
+import { lotHandedOverDateField } from '../StatusUniqueValues';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -204,9 +205,9 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
       const qMunicipality = "Municipality = '" + municipal + "'";
       const qBarangay = "Barangay = '" + barangay + "'";
       const qMunicipalBarangay = qMunicipality + ' AND ' + qBarangay;
-      const qDate =
-        // eslint-disable-next-line no-useless-concat
-        'HandedOverDate IS NOT NULL' + ' AND ' + "HandedOverDate = date'" + selectedDate + "'";
+      const qDateNotNull = lotHandedOverDateField + ' IS NOT NULL';
+      const qDateSelected = lotHandedOverDateField + " = date'" + selectedDate + "'";
+      const qDate = qDateNotNull + ' AND ' + qDateSelected;
 
       var query = lotLayer.createQuery();
       if (municipal && barangay) {

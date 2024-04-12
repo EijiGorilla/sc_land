@@ -2,9 +2,24 @@ import { dateTable, lotLayer, nloLayer, structureLayer } from './layers';
 import StatisticDefinition from '@arcgis/core/rest/support/StatisticDefinition';
 import * as am5 from '@amcharts/amcharts5';
 import { view } from './Scene';
-// Read this for why useState is not updated
-//https://stackoverflow.com/questions/68627317/usestate-not-updated-as-expected
-//https://codesandbox.io/s/optimistic-moore-zm8sc?file=/src/App.js
+import {
+  nloStatusLabel,
+  nloStatusQuery,
+  lotMoaField,
+  lotMoaStatus,
+  lotStatusField,
+  lotStatusLabel,
+  lotStatusQuery,
+  nloStatusField,
+  structureMoaField,
+  structureMoaStatus,
+  structurePteField,
+  structureStatusField,
+  structureStatusLabel,
+  structureStatusQuery,
+  lotHandedOverDateField,
+  lotHandedOverAreaField,
+} from './StatusUniqueValues';
 
 // Updat date
 export async function dateUpdate() {
@@ -40,292 +55,56 @@ export async function dateUpdate() {
   });
 }
 
-// For Lot Pie Chart
-const statusLot: string[] = [
-  'Paid',
-  'For Payment Processing',
-  'For Legal Pass',
-  'For Appraisal/Offer to Buy',
-  'For Expro',
-  'With PTE',
-  'For Harmonization',
-];
+export async function generateLotData(municipal: any, barangay: any) {
+  // Query
+  const queryMunicipality = "Municipality = '" + municipal + "'";
+  const queryBarangay = "Barangay = '" + barangay + "'";
+  const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
+  const queryField = lotStatusField + ' IS NOT NULL';
 
-export const statusLotChartQuery = [
-  {
-    category: statusLot[0],
-    value: 1,
-  },
-  {
-    category: statusLot[1],
-    value: 2,
-  },
-  {
-    category: statusLot[2],
-    value: 3,
-  },
-  {
-    category: statusLot[3],
-    value: 4,
-  },
-  {
-    category: statusLot[4],
-    value: 5,
-  },
-  {
-    category: statusLot[5],
-    value: 6,
-  },
-  {
-    category: statusLot[6],
-    value: 7,
-  },
-];
-
-// For Lot MoA Chart
-const statusMOA: String[] = [
-  'For Negotiation',
-  'Expropriation',
-  'Donation',
-  'CA 141',
-  'No Need to Acquire',
-];
-
-export const statusMoaLotChartQuery = [
-  {
-    category: statusMOA[0],
-    value: 1,
-  },
-  {
-    category: statusMOA[1],
-    value: 2,
-  },
-  {
-    category: statusMOA[2],
-    value: 3,
-  },
-  {
-    category: statusMOA[3],
-    value: 4,
-  },
-  {
-    category: statusMOA[4],
-    value: 5,
-  },
-];
-
-// For Structure Pie Chart
-const statusStructure = [
-  'Dismantling/Clearing',
-  'Paid',
-  'For Payment Processing',
-  'For Legal Pass',
-  'For Appraisal/Offer to Compensate',
-  'LBP Account Opening',
-];
-
-export const statusStructureChartQuery = [
-  {
-    category: statusStructure[0],
-    value: 1,
-  },
-  {
-    category: statusStructure[1],
-    value: 2,
-  },
-  {
-    category: statusStructure[2],
-    value: 3,
-  },
-  {
-    category: statusStructure[3],
-    value: 4,
-  },
-  {
-    category: statusStructure[4],
-    value: 5,
-  },
-  {
-    category: statusStructure[5],
-    value: 6,
-  },
-];
-
-const statusMoaStructure = ['For Negotiation', 'Expropriation', 'Donation', 'No Need to Acquire'];
-
-export const statusMoaStructureChartQuery = [
-  {
-    category: statusMoaStructure[0],
-    value: 1,
-  },
-  {
-    category: statusMoaStructure[1],
-    value: 2,
-  },
-  {
-    category: statusMoaStructure[2],
-    value: 3,
-  },
-  {
-    category: statusMoaStructure[3],
-    value: 4,
-  },
-];
-
-// Non-Land Owner
-const statusNlo = [
-  'Relocated',
-  'Paid',
-  'For Payment Processing',
-  'For Legal Pass',
-  'For Appraisal/OtC/Requirements for Other Entitlements',
-  'LBP Account Opening',
-];
-
-export const statusNloChartQuery = [
-  {
-    category: statusNlo[0],
-    value: 1,
-  },
-  {
-    category: statusNlo[1],
-    value: 2,
-  },
-  {
-    category: statusNlo[2],
-    value: 3,
-  },
-  {
-    category: statusNlo[3],
-    value: 4,
-  },
-  {
-    category: statusNlo[4],
-    value: 5,
-  },
-  {
-    category: statusNlo[5],
-    value: 6,
-  },
-];
-
-export async function generateLotData() {
-  var total_paid_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA = 1 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_paid_lot',
-    statisticType: 'sum',
-  });
-
-  var total_payp_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA = 2 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_payp_lot',
-    statisticType: 'sum',
-  });
-
-  var total_legalpass_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA = 3 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_legalpass_lot',
-    statisticType: 'sum',
-  });
-
-  var total_otb_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA = 4 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_otb_lot',
-    statisticType: 'sum',
-  });
-
-  var total_expro_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA = 5 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_expro_lot',
-    statisticType: 'sum',
-  });
-
-  var total_pte_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA = 6 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_pte_lot',
-    statisticType: 'sum',
-  });
-
-  var total_harmo_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA = 7 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_harmo_lot',
-    statisticType: 'sum',
+  var total_count = new StatisticDefinition({
+    onStatisticField: lotStatusField,
+    outStatisticFieldName: 'total_count',
+    statisticType: 'count',
   });
 
   var query = lotLayer.createQuery();
-  query.outStatistics = [
-    total_paid_lot,
-    total_payp_lot,
-    total_legalpass_lot,
-    total_otb_lot,
-    total_expro_lot,
-    total_pte_lot,
-    total_harmo_lot,
-  ];
-  query.returnGeometry = true;
+  query.outFields = [lotStatusField];
+  query.outStatistics = [total_count];
+  query.orderByFields = [lotStatusField];
+  query.groupByFieldsForStatistics = [lotStatusField];
+  if (municipal && !barangay) {
+    query.where = queryField + ' AND ' + queryMunicipality;
+  } else if (barangay) {
+    query.where = queryField + ' AND ' + queryMunicipalBarangay;
+  }
 
   return lotLayer.queryFeatures(query).then((response: any) => {
-    var stats = response.features[0].attributes;
-    const paid = stats.total_paid_lot;
-    const payp = stats.total_payp_lot;
-    const legalpass = stats.total_legalpass_lot;
-    const otb = stats.total_otb_lot;
-    const expro = stats.total_expro_lot;
-    const pte = stats.total_pte_lot;
-    const harmo = stats.total_harmo_lot;
+    var stats = response.features;
+    const data = stats.map((result: any, index: any) => {
+      const attributes = result.attributes;
+      const status_id = attributes.StatusLA;
+      const count = attributes.total_count;
+      return Object.assign({
+        category: lotStatusLabel[status_id - 1],
+        value: count,
+      });
+    });
 
-    const compile = [
-      {
-        category: statusLot[0],
-        value: paid,
+    const data1: any = [];
+    lotStatusLabel.map((status: any, index: any) => {
+      const find = data.find((emp: any) => emp.category === status);
+      const value = find === undefined ? 0 : find?.value;
+      const object = {
+        category: status,
+        value: value,
         sliceSettings: {
-          fill: am5.color('#00734d'),
+          fill: am5.color(lotStatusQuery[index].color),
         },
-      },
-      {
-        category: statusLot[1],
-        value: payp,
-        sliceSettings: {
-          fill: am5.color('#0070ff'),
-        },
-      },
-      {
-        category: statusLot[2],
-        value: legalpass,
-        sliceSettings: {
-          fill: am5.color('#ffff00'),
-        },
-      },
-      {
-        category: statusLot[3],
-        value: otb,
-        sliceSettings: {
-          fill: am5.color('#ffaa00'),
-        },
-      },
-      {
-        category: statusLot[4],
-        value: expro,
-        sliceSettings: {
-          fill: am5.color('#ff0000'),
-        },
-      },
-      {
-        category: statusLot[5],
-        value: pte,
-        sliceSettings: {
-          fill: am5.color('#70AD47'),
-        },
-      },
-      {
-        category: statusLot[6],
-        value: harmo,
-        sliceSettings: {
-          fill: am5.color('#B2B2B2'),
-        },
-      },
-    ];
-    return compile;
+      };
+      data1.push(object);
+    });
+    return data1;
   });
 }
 
@@ -336,8 +115,9 @@ export async function generateLotNumber() {
     statisticType: 'sum',
   });
 
+  const onStatisticFieldValue = 'CASE WHEN ' + lotStatusField + ' >= 0 THEN 1 ELSE 0 END';
   var total_lot_pie = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA >= 0 THEN 1 ELSE 0 END',
+    onStatisticField: onStatisticFieldValue,
     outStatisticFieldName: 'total_lot_pie',
     statisticType: 'sum',
   });
@@ -382,84 +162,57 @@ export async function generateHandedOver() {
   });
 }
 
-export async function generateLotMoaData() {
-  var total_nego_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN MoA = 1 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_nego_lot',
-    statisticType: 'sum',
-  });
+export async function generateLotMoaData(municipal: any, barangay: any) {
+  // Query
+  const queryMunicipality = "Municipality = '" + municipal + "'";
+  const queryBarangay = "Barangay = '" + barangay + "'";
+  const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
+  const queryField = lotMoaField + ' IS NOT NULL';
 
-  var total_expro_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN MoA = 2 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_expro_lot',
-    statisticType: 'sum',
-  });
-
-  var total_donate_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN MoA = 3 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_donate_lot',
-    statisticType: 'sum',
-  });
-
-  var total_ca141_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN MoA = 4 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_ca141_lot',
-    statisticType: 'sum',
-  });
-
-  var total_noneed_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN MoA = 5 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_noneed_lot',
-    statisticType: 'sum',
+  var total_count = new StatisticDefinition({
+    onStatisticField: lotMoaField,
+    outStatisticFieldName: 'total_count',
+    statisticType: 'count',
   });
 
   var query = lotLayer.createQuery();
-  query.outStatistics = [
-    total_nego_lot,
-    total_expro_lot,
-    total_donate_lot,
-    total_ca141_lot,
-    total_noneed_lot,
-  ];
-  query.returnGeometry = true;
-  return lotLayer.queryFeatures(query).then((response: any) => {
-    var stats = response.features[0].attributes;
-    const nego = stats.total_nego_lot;
-    const expro = stats.total_expro_lot;
-    const donate = stats.total_donate_lot;
-    const ca141 = stats.total_ca141_lot;
-    const noneed = stats.total_noneed_lot;
+  query.outFields = [lotMoaField];
+  query.outStatistics = [total_count];
+  query.orderByFields = [lotMoaField];
+  query.groupByFieldsForStatistics = [lotMoaField];
 
-    const compile = [
-      {
-        category: statusMOA[0],
-        value: nego,
-      },
-      {
-        category: statusMOA[1],
-        value: expro,
-      },
-      {
-        category: statusMOA[2],
-        value: donate,
-      },
-      {
-        category: statusMOA[3],
-        value: ca141,
-      },
-      {
-        category: statusMOA[4],
-        value: noneed,
-      },
-    ];
-    return compile;
+  if (municipal && !barangay) {
+    query.where = queryField + ' AND ' + queryMunicipality;
+  } else if (barangay) {
+    query.where = queryField + ' AND ' + queryMunicipalBarangay;
+  }
+
+  return lotLayer.queryFeatures(query).then((response: any) => {
+    var stats = response.features;
+    const data = stats.map((result: any, index: any) => {
+      const attributes = result.attributes;
+      const status_id = attributes.MoA;
+      const count = attributes.total_count;
+      return Object.assign({
+        category: lotMoaStatus[status_id - 1],
+        value: count,
+      });
+    });
+
+    const data1: any = [];
+    lotMoaStatus.map((status: any, index: any) => {
+      const find = data.find((emp: any) => emp.category === status);
+      const value = find === undefined ? 0 : find?.value;
+      data1.push({ category: status, value: value });
+    });
+    return data1;
   });
 }
 
 // For monthly progress chart of lot
 export async function generateLotProgress(municipality: any, barangay: any) {
   var total_count_lot = new StatisticDefinition({
-    onStatisticField: 'HandedOverDate',
+    onStatisticField: lotHandedOverDateField,
     outStatisticFieldName: 'total_count_lot',
     statisticType: 'count',
   });
@@ -472,7 +225,7 @@ export async function generateLotProgress(municipality: any, barangay: any) {
   const queryMunicipality = "Municipality = '" + municipal + "'";
   const queryBarangay = "Barangay = '" + barang + "'";
   const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
-  const queryHandedOverDate = 'HandedOverDate IS NOT NULL';
+  const queryHandedOverDate = lotHandedOverDateField + ' IS NOT NULL';
 
   if (municipal && barang) {
     query.where = queryHandedOverDate + ' AND ' + queryMunicipalBarangay;
@@ -482,9 +235,9 @@ export async function generateLotProgress(municipality: any, barangay: any) {
     query.where = queryHandedOverDate;
   }
 
-  query.outFields = ['HandedOverDate'];
-  query.orderByFields = ['HandedOverDate'];
-  query.groupByFieldsForStatistics = ['HandedOverDate'];
+  query.outFields = [lotHandedOverDateField];
+  query.orderByFields = [lotHandedOverDateField];
+  query.groupByFieldsForStatistics = [lotHandedOverDateField];
 
   return lotLayer.queryFeatures(query).then((response: any) => {
     var stats = response.features;
@@ -512,7 +265,7 @@ export async function generateHandedOverAreaData() {
   });
 
   var total_handedover_area = new StatisticDefinition({
-    onStatisticField: 'HandedOverArea',
+    onStatisticField: lotHandedOverAreaField,
     outStatisticFieldName: 'total_handedover_area',
     statisticType: 'sum',
   });
@@ -547,122 +300,71 @@ export async function generateHandedOverAreaData() {
   });
 }
 
-export async function generateStructureData() {
-  var total_clear_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusStruc = 1 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_clear_lot',
-    statisticType: 'sum',
-  });
+export async function generateStructureData(municipal: any, barangay: any) {
+  // Query
+  const queryMunicipality = "Municipality = '" + municipal + "'";
+  const queryBarangay = "Barangay = '" + barangay + "'";
+  const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
+  const queryField = structureStatusField + ' IS NOT NULL';
 
-  var total_paid_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusStruc = 2 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_paid_lot',
-    statisticType: 'sum',
-  });
-
-  var total_payp_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusStruc = 3 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_payp_lot',
-    statisticType: 'sum',
-  });
-
-  var total_legalpass_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusStruc = 4 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_legalpass_lot',
-    statisticType: 'sum',
-  });
-
-  var total_otc_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusStruc = 5 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_otc_lot',
-    statisticType: 'sum',
-  });
-
-  var total_lbp_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusStruc = 6 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_lbp_lot',
-    statisticType: 'sum',
+  var total_count = new StatisticDefinition({
+    onStatisticField: structureStatusField,
+    outStatisticFieldName: 'total_count',
+    statisticType: 'count',
   });
 
   var query = structureLayer.createQuery();
-  query.outStatistics = [
-    total_clear_lot,
-    total_paid_lot,
-    total_payp_lot,
-    total_legalpass_lot,
-    total_otc_lot,
-    total_lbp_lot,
-  ];
-  query.returnGeometry = true;
-  query.outFields = ['*'];
+  query.outFields = [structureStatusField];
+  query.outStatistics = [total_count];
+  query.orderByFields = [structureStatusField];
+  query.groupByFieldsForStatistics = [structureStatusField];
+  if (municipal && !barangay) {
+    query.where = queryField + ' AND ' + queryMunicipality;
+  } else if (barangay) {
+    query.where = queryField + ' AND ' + queryMunicipalBarangay;
+  }
+
   return structureLayer.queryFeatures(query).then((response: any) => {
-    var stats = response.features[0].attributes;
+    var stats = response.features;
+    const data = stats.map((result: any, index: any) => {
+      const attributes = result.attributes;
+      const status_id = attributes.StatusStruc;
+      const count = attributes.total_count;
+      return Object.assign({
+        category: structureStatusLabel[status_id - 1],
+        value: count,
+      });
+    });
 
-    const clear = stats.total_clear_lot;
-    const paid = stats.total_paid_lot;
-    const payp = stats.total_payp_lot;
-    const legalpass = stats.total_legalpass_lot;
-    const otc = stats.total_otc_lot;
-    const lbp = stats.total_lbp_lot;
-
-    const compile = [
-      {
-        category: statusStructure[0],
-        value: clear,
+    const data1: any = [];
+    structureStatusLabel.map((status: any, index: any) => {
+      const find = data.find((emp: any) => emp.category === status);
+      const value = find === undefined ? 0 : find?.value;
+      const object = {
+        category: status,
+        value: value,
         sliceSettings: {
-          fill: am5.color('#00C5FF'),
+          fill: am5.color(structureStatusQuery[index].color),
         },
-      },
-      {
-        category: statusStructure[1],
-        value: paid,
-        sliceSettings: {
-          fill: am5.color('#70AD47'),
-        },
-      },
-      {
-        category: statusStructure[2],
-        value: payp,
-        sliceSettings: {
-          fill: am5.color('#0070FF'),
-        },
-      },
-      {
-        category: statusStructure[3],
-        value: legalpass,
-        sliceSettings: {
-          fill: am5.color('#FFFF00'),
-        },
-      },
-      {
-        category: statusStructure[4],
-        value: otc,
-        sliceSettings: {
-          fill: am5.color('#FFAA00'),
-        },
-      },
-      {
-        category: statusStructure[5],
-        value: lbp,
-        sliceSettings: {
-          fill: am5.color('#FF0000'),
-        },
-      },
-    ];
-    return compile;
+      };
+      data1.push(object);
+    });
+    return data1;
   });
 }
 
 // For Permit-to-Enter
 export async function generateStrucNumber() {
+  const onStatisticFieldPte = 'CASE WHEN ' + structurePteField + ' = 1 THEN 1 ELSE 0 END';
   var total_pte_structure = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN PTE = 1 THEN 1 ELSE 0 END',
+    onStatisticField: onStatisticFieldPte,
     outStatisticFieldName: 'total_pte_structure',
     statisticType: 'sum',
   });
 
+  const onStatisticFieldStruc = 'CASE WHEN ' + structureStatusField + ' >= 1 THEN 1 ELSE 0 END';
   var total_struc_N = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusStruc >=1 THEN 1 ELSE 0 END',
+    onStatisticField: onStatisticFieldStruc,
     outStatisticFieldName: 'total_struc_N',
     statisticType: 'sum',
   });
@@ -679,172 +381,110 @@ export async function generateStrucNumber() {
   });
 }
 
-export async function generateStrucMoaData() {
-  var total_nego_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN MoA = 1 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_nego_lot',
-    statisticType: 'sum',
-  });
+export async function generateStrucMoaData(municipal: any, barangay: any) {
+  // Query
+  const queryMunicipality = "Municipality = '" + municipal + "'";
+  const queryBarangay = "Barangay = '" + barangay + "'";
+  const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
+  const queryField = structureMoaField + ' IS NOT NULL';
 
-  var total_expro_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN MoA = 2 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_expro_lot',
-    statisticType: 'sum',
-  });
-
-  var total_donate_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN MoA = 3 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_donate_lot',
-    statisticType: 'sum',
-  });
-
-  var total_noneed_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN MoA = 4 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_noneed_lot',
-    statisticType: 'sum',
+  var total_count = new StatisticDefinition({
+    onStatisticField: structureMoaField,
+    outStatisticFieldName: 'total_count',
+    statisticType: 'count',
   });
 
   var query = structureLayer.createQuery();
-  query.outStatistics = [total_nego_lot, total_expro_lot, total_donate_lot, total_noneed_lot];
-  query.returnGeometry = true;
-  return structureLayer.queryFeatures(query).then((response: any) => {
-    var stats = response.features[0].attributes;
-    const nego = stats.total_nego_lot;
-    const expro = stats.total_expro_lot;
-    const donate = stats.total_donate_lot;
-    const noneed = stats.total_noneed_lot;
+  query.outFields = [structureMoaField];
+  query.outStatistics = [total_count];
+  query.orderByFields = [structureMoaField];
+  query.groupByFieldsForStatistics = [structureMoaField];
 
-    const compile = [
-      {
-        category: statusMoaStructure[0],
-        value: nego,
-      },
-      {
-        category: statusMoaStructure[1],
-        value: expro,
-      },
-      {
-        category: statusMoaStructure[2],
-        value: donate,
-      },
-      {
-        category: statusMoaStructure[3],
-        value: noneed,
-      },
-    ];
-    return compile;
+  if (municipal && !barangay) {
+    query.where = queryField + ' AND ' + queryMunicipality;
+  } else if (barangay) {
+    query.where = queryField + ' AND ' + queryMunicipalBarangay;
+  }
+
+  return structureLayer.queryFeatures(query).then((response: any) => {
+    var stats = response.features;
+    const data = stats.map((result: any, index: any) => {
+      const attributes = result.attributes;
+      const status_id = attributes.MoA;
+      const count = attributes.total_count;
+      return Object.assign({
+        category: structureMoaStatus[status_id - 1],
+        value: count,
+      });
+    });
+
+    const data1: any = [];
+    structureMoaStatus.map((status: any, index: any) => {
+      const find = data.find((emp: any) => emp.category === status);
+      const value = find === undefined ? 0 : find?.value;
+      data1.push({ category: status, value: value });
+    });
+    return data1;
   });
 }
 
-export async function generateNloData() {
-  var total_relocated_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusRC = 1 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_relocated_lot',
-    statisticType: 'sum',
-  });
+export async function generateNloData(municipal: any, barangay: any) {
+  // Query
+  const queryMunicipality = "Municipality = '" + municipal + "'";
+  const queryBarangay = "Barangay = '" + barangay + "'";
+  const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
+  const queryField = nloStatusField + ' IS NOT NULL';
 
-  var total_paid_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusRC = 2 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_paid_lot',
-    statisticType: 'sum',
-  });
-
-  var total_payp_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusRC = 3 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_payp_lot',
-    statisticType: 'sum',
-  });
-
-  var total_legalpass_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusRC = 4 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_legalpass_lot',
-    statisticType: 'sum',
-  });
-
-  var total_otc_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusRC = 5 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_otc_lot',
-    statisticType: 'sum',
-  });
-
-  var total_lbp_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusRC = 6 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_lbp_lot',
-    statisticType: 'sum',
+  var total_count = new StatisticDefinition({
+    onStatisticField: nloStatusField,
+    outStatisticFieldName: 'total_count',
+    statisticType: 'count',
   });
 
   var query = nloLayer.createQuery();
-  query.outStatistics = [
-    total_relocated_lot,
-    total_paid_lot,
-    total_payp_lot,
-    total_legalpass_lot,
-    total_otc_lot,
-    total_lbp_lot,
-  ];
-  query.returnGeometry = true;
+  query.outFields = [nloStatusField];
+  query.outStatistics = [total_count];
+  query.orderByFields = [nloStatusField];
+  query.groupByFieldsForStatistics = [nloStatusField];
+  if (municipal && !barangay) {
+    query.where = queryField + ' AND ' + queryMunicipality;
+  } else if (barangay) {
+    query.where = queryField + ' AND ' + queryMunicipalBarangay;
+  }
 
   return nloLayer.queryFeatures(query).then((response: any) => {
-    var stats = response.features[0].attributes;
+    var stats = response.features;
+    const data = stats.map((result: any, index: any) => {
+      const attributes = result.attributes;
+      const status_id = attributes.StatusRC;
+      const count = attributes.total_count;
+      return Object.assign({
+        category: nloStatusLabel[status_id - 1],
+        value: count,
+      });
+    });
 
-    const clear = stats.total_relocated_lot;
-    const paid = stats.total_paid_lot;
-    const payp = stats.total_payp_lot;
-    const legalpass = stats.total_legalpass_lot;
-    const otc = stats.total_otc_lot;
-    const lbp = stats.total_lbp_lot;
-
-    const compile = [
-      {
-        category: statusNlo[0],
-        value: clear,
+    const data1: any = [];
+    nloStatusLabel.map((status: any, index: any) => {
+      const find = data.find((emp: any) => emp.category === status);
+      const value = find === undefined ? 0 : find?.value;
+      const object = {
+        category: status,
+        value: value,
         sliceSettings: {
-          fill: am5.color('#00C5FF'),
+          fill: am5.color(nloStatusQuery[index].color),
         },
-      },
-      {
-        category: statusNlo[1],
-        value: paid,
-        sliceSettings: {
-          fill: am5.color('#70AD47'),
-        },
-      },
-      {
-        category: statusNlo[2],
-        value: payp,
-        sliceSettings: {
-          fill: am5.color('#0070FF'),
-        },
-      },
-      {
-        category: statusNlo[3],
-        value: legalpass,
-        sliceSettings: {
-          fill: am5.color('#FFFF00'),
-        },
-      },
-      {
-        category: statusNlo[4],
-        value: otc,
-        sliceSettings: {
-          fill: am5.color('#FFAA00'),
-        },
-      },
-      {
-        category: statusNlo[5],
-        value: lbp,
-        sliceSettings: {
-          fill: am5.color('#FF0000'),
-        },
-      },
-    ];
-    return compile;
+      };
+      data1.push(object);
+    });
+    return data1;
   });
 }
 
 export async function generateNloNumber() {
+  const onStatisticFieldNlo = 'CASE WHEN ' + nloStatusField + ' >= 1 THEN 1 ELSE 0 END';
   var total_lbp = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusRC >= 1 THEN 1 ELSE 0 END',
+    onStatisticField: onStatisticFieldNlo,
     outStatisticFieldName: 'total_lbp',
     statisticType: 'sum',
   });

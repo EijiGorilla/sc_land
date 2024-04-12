@@ -7,19 +7,9 @@ import * as am5 from '@amcharts/amcharts5';
 import * as am5percent from '@amcharts/amcharts5/percent';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import am5themes_Responsive from '@amcharts/amcharts5/themes/Responsive';
-import {
-  generateNloData,
-  generateNloNumber,
-  statusNloChartQuery,
-  thousands_separators,
-} from '../Query';
+import { generateNloData, generateNloNumber, thousands_separators } from '../Query';
 import { CalciteLabel } from '@esri/calcite-components-react';
-//https://codesandbox.io/s/amcharts5-react-demo-forked-gid7b0?from-embed=&file=/src/App.js:271-276
-// https://github.com/reactchartjs/react-chartjs-2/blob/master/src/chart.tsx
-//https://www.reddit.com/r/reactjs/comments/gr5vhh/react_hooks_and_amcharts4/?rdt=56344
-//https://medium.com/swlh/how-to-use-amcharts-4-with-react-hooks-999a62c185a5
-//https://codesandbox.io/s/amcharts5-react-demo-forked-hrth2d
-// Zoom
+import { nloStatusQuery, nloStatusField } from '../StatusUniqueValues';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -64,7 +54,7 @@ const NloChart = memo(({ municipal, barangay }: any) => {
   }
 
   useEffect(() => {
-    generateNloData().then((result: any) => {
+    generateNloData(municipal, barangay).then((result: any) => {
       SetNloData(result);
     });
 
@@ -131,7 +121,7 @@ const NloChart = memo(({ municipal, barangay }: any) => {
     pieSeries.slices.template.events.on('click', (ev) => {
       const selected: any = ev.target.dataItem?.dataContext;
       const categorySelect: string = selected.category;
-      const find = statusNloChartQuery.find((emp: any) => emp.category === categorySelect);
+      const find = nloStatusQuery.find((emp: any) => emp.category === categorySelect);
       const typeSelect = find?.value;
 
       var highlightSelect: any;
@@ -176,7 +166,7 @@ const NloChart = memo(({ municipal, barangay }: any) => {
           }); // End of queryFeatures
 
           layerView.filter = new FeatureFilter({
-            where: 'StatusRC = ' + typeSelect,
+            where: nloStatusField + ' = ' + typeSelect,
           });
         }); // End of view.whenLayerView
       }); // End of view.whenv

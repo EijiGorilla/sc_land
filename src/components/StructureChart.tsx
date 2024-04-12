@@ -13,10 +13,14 @@ import {
   generateStrucNumber,
   generateStructureData,
   thousands_separators,
-  statusStructureChartQuery,
-  statusMoaStructureChartQuery,
 } from '../Query';
 import { CalciteLabel } from '@esri/calcite-components-react';
+import {
+  structureMoaField,
+  structureMoaQuery,
+  structureStatusField,
+  structureStatusQuery,
+} from '../StatusUniqueValues';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -74,7 +78,7 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
   }
 
   useEffect(() => {
-    generateStructureData().then((result: any) => {
+    generateStructureData(municipal, barangay).then((result: any) => {
       setStructureData(result);
     });
 
@@ -83,7 +87,7 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
       setStructureNumber(response);
     });
 
-    generateStrucMoaData().then((response: any) => {
+    generateStrucMoaData(municipal, barangay).then((response: any) => {
       setStructureMoaData(response);
     });
   }, [municipal, barangay]);
@@ -145,7 +149,7 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
     pieSeries.slices.template.events.on('click', (ev) => {
       const selected: any = ev.target.dataItem?.dataContext;
       const categorySelect: string = selected.category;
-      const find = statusStructureChartQuery.find((emp: any) => emp.category === categorySelect);
+      const find = structureStatusQuery.find((emp: any) => emp.category === categorySelect);
       const statusSelect = find?.value;
 
       var highlightSelect: any;
@@ -189,7 +193,7 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
           }); // End of queryFeatures
 
           layerView.filter = new FeatureFilter({
-            where: 'StatusStruc = ' + statusSelect,
+            where: structureStatusField + ' = ' + statusSelect,
           });
         }); // End of view.whenLayerView
       }); // End of view.whenv
@@ -412,7 +416,7 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
     series.columns.template.events.on('click', function (ev) {
       const selected: any = ev.target.dataItem?.dataContext;
       const categorySelect: string = selected.category;
-      const find = statusMoaStructureChartQuery.find((emp: any) => emp.category === categorySelect);
+      const find = structureMoaQuery.find((emp: any) => emp.category === categorySelect);
       const statusSelect = find?.value;
 
       var highlightSelect: any;
@@ -454,7 +458,7 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
           });
         });
         layerView.filter = new FeatureFilter({
-          where: 'MoA = ' + statusSelect,
+          where: structureMoaField + ' = ' + statusSelect,
         });
       }); // End of whenLayerView
     });
