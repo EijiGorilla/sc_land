@@ -24,6 +24,7 @@ import {
   //superUrgentLotLayer,
 } from './layers';
 import { highlightLot } from './Query';
+import Zoom from '@arcgis/core/widgets/Zoom';
 
 export const map = new Map({
   basemap: 'dark-gray-vector', // "streets-night-vector", basemap
@@ -177,3 +178,8 @@ const locateBtn = new Locate({
   // container: undefined,
 });
 view.ui.add(locateBtn, { position: 'top-right' });
+
+const zoom = new Zoom({
+  view,
+});
+view.ui.add(zoom, { position: 'bottom-right' });
