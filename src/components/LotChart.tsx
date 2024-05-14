@@ -16,6 +16,7 @@ import {
   generateHandedOver,
 } from '../Query';
 import '../App.css';
+import '@esri/calcite-components/dist/components/calcite-label';
 import { CalciteLabel } from '@esri/calcite-components-react';
 import { lotMoaStatusQuery, lotStatusField, lotStatusQuery } from '../StatusUniqueValues';
 
