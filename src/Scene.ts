@@ -25,6 +25,7 @@ import {
 } from './layers';
 import { highlightLot } from './Query';
 import Zoom from '@arcgis/core/widgets/Zoom';
+import Measurement from '@arcgis/core/widgets/Measurement';
 
 export const map = new Map({
   basemap: 'dark-gray-vector', // "streets-night-vector", basemap
@@ -164,23 +165,25 @@ const searchWidget = new Search({
   sources: sources,
 });
 
-const searchExpand = new Expand({
+export const searchExpand = new Expand({
   view: view,
   content: searchWidget,
   expandIconClass: 'esri-icon-search',
   group: 'top-right',
 });
-view.ui.add(searchExpand, {
-  position: 'top-right',
-});
 
-const locateBtn = new Locate({
+export const locateBtn = new Locate({
   view,
   // container: undefined,
 });
-view.ui.add(locateBtn, { position: 'top-right' });
 
-const zoom = new Zoom({
+export const zoom = new Zoom({
   view,
 });
-view.ui.add(zoom, { position: 'bottom-right' });
+
+// Measurement Tool
+export const measurement = new Measurement({
+  view: view,
+  activeTool: undefined,
+  container: undefined,
+});

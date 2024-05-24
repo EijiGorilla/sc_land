@@ -1,6 +1,15 @@
 import { useRef, useEffect, useState } from 'react';
 import Select from 'react-select';
-import { map, view, basemaps, layerList } from './Scene';
+import {
+  map,
+  view,
+  basemaps,
+  layerList,
+  measurement,
+  searchExpand,
+  locateBtn,
+  zoom,
+} from './Scene';
 import './index.css';
 import './App.css';
 import '@esri/calcite-components/dist/components/calcite-shell';
@@ -13,6 +22,7 @@ import '@esri/calcite-components/dist/components/calcite-action';
 import '@esri/calcite-components/dist/components/calcite-action-bar';
 import '@esri/calcite-components/dist/components/calcite-tabs';
 import '@esri/calcite-components/dist/components/calcite-tab';
+import '@esri/calcite-components/dist/components/calcite-button';
 import '@esri/calcite-components/dist/components/calcite-tab-title';
 import '@esri/calcite-components/dist/calcite/calcite.css';
 import {
@@ -28,6 +38,7 @@ import {
   CalciteList,
   CalciteListItem,
   CalciteLabel,
+  CalciteButton,
 } from '@esri/calcite-components-react';
 import { dateUpdate, zoomToLayer } from './Query';
 import LotProgressChart from './components/LotProgressChart';
@@ -44,6 +55,10 @@ function App() {
   //**** Set states */
   const mapDiv = useRef(null);
   const layerListDiv = useRef<HTMLDivElement | undefined | any>(null);
+
+  // Measurement tools
+  const [activeAnalysis, setActiveAnalysis] = useState<any | undefined>('');
+  const measurementToolDiv = useRef<HTMLDivElement | undefined | any>(null);
 
   // For Calcite Design
   const calcitePanelBasemaps = useRef<HTMLDivElement | undefined | any>(null);
@@ -111,6 +126,17 @@ function App() {
     }
   });
 
+  // Measurement Tool
+  useEffect(() => {
+    if (activeAnalysis === 'directLineMeasurementAnalysisButton') {
+      measurement.activeTool = 'direct-line';
+    } else if (activeAnalysis === 'areaMeasurementAnalysisButton') {
+      measurement.activeTool = 'area';
+    } else if (activeAnalysis === 'clearButton') {
+      measurement.clear();
+    }
+  }, [activeAnalysis]);
+
   useEffect(() => {
     if (mapDiv.current) {
       /**
@@ -120,6 +146,17 @@ function App() {
       map.ground.navigationConstraint = {
         type: 'none',
       };
+
+      // Measurement tool
+      measurement.container = measurementToolDiv.current;
+      const measureButton = document.getElementById('measurementToolMenu') as HTMLElement;
+      view.ui.add(measureButton, 'top-right');
+
+      view.ui.add(searchExpand, {
+        position: 'top-right',
+      });
+      view.ui.add(locateBtn, { position: 'top-right' });
+      view.ui.add(zoom, { position: 'bottom-right' });
 
       view.container = mapDiv.current;
       view.ui.components = [];
@@ -415,6 +452,37 @@ function App() {
           </CalcitePanel>
         </CalciteShellPanel>
         <div className="mapDiv" ref={mapDiv}></div>
+
+        {/* Measurement Tools */}
+        <div
+          id="measurementToolMenu"
+          className="esri-widget"
+          style={{
+            padding: '0.5em',
+            maxWidth: '110px',
+            width: '200px',
+            height: '45px',
+          }}
+        >
+          <CalciteButton
+            id="directLineMeasurementAnalysisButton"
+            icon-start="measure-line"
+            title="Interact with direct line measurement"
+            onClick={(event: any) => setActiveAnalysis(event.currentTarget.id)}
+          ></CalciteButton>
+          <CalciteButton
+            id="areaMeasurementAnalysisButton"
+            icon-start="measure-area"
+            title="Interact with area measurement"
+            onClick={(event: any) => setActiveAnalysis(event.currentTarget.id)}
+          ></CalciteButton>
+          <CalciteButton
+            id="clearButton"
+            icon-start="trash"
+            title="Clear measurement"
+            onClick={(event: any) => setActiveAnalysis(event.currentTarget.id)}
+          ></CalciteButton>
+        </div>
 
         {/* Lot progress chart is loaded ONLY when charts widget is clicked. */}
         {nextWidget === 'charts' && nextWidget !== activeWidget ? (

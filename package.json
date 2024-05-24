@@ -1,7 +1,7 @@
 {
   "homepage": "https://eijigorilla.github.io/sc_land",
   "name": "sc_land",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "dependencies": {
     "@amcharts/amcharts5": "^5.5.6",
