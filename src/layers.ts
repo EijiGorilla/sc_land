@@ -170,6 +170,113 @@ export const prowLayer = new FeatureLayer({
 });
 prowLayer.listMode = 'hide';
 
+/*------- NGCP Layers ---------- */
+/* NGCP Working Area */
+const ngcpPoleWARenderer = new SimpleRenderer({
+  symbol: new SimpleFillSymbol({
+    color: [197, 0, 255],
+    style: 'backward-diagonal',
+    outline: {
+      color: '#C500FF',
+      width: 0.7,
+    },
+  }),
+});
+
+export const ngcp_working_area7 = new FeatureLayer({
+  portalItem: {
+    id: 'd5b30a79bdae40c492771ec1e46ab0e9',
+    portal: {
+      url: 'https://gis.railway-sector.com/portal',
+    },
+  },
+  renderer: ngcpPoleWARenderer,
+  elevationInfo: {
+    mode: 'on-the-ground',
+  },
+  layerId: 3,
+  title: 'NGCP Working Area for Site 7',
+});
+
+/* NGCP Line  */
+const bufferColor = ['#55FF00', '#FFFF00', '#E1E1E1'];
+const ngcpLineRenderer = new SimpleRenderer({
+  symbol: new SimpleLineSymbol({
+    color: bufferColor[0],
+    width: '3px',
+    style: 'dash',
+  }),
+});
+// const ngcpRowRenderer = new UniqueValueRenderer({
+//   legendOptions: {
+//     title: 'Proposed ROW (Corridor)',
+//   },
+//   field: 'Type',
+//   uniqueValueInfos: [
+//     {
+//       value: '15m',
+//       symbol: new SimpleLineSymbol({
+//         color: bufferColor[0],
+//         width: '3px',
+//         style: 'dash',
+//       }),
+//       label: '15m Buffer',
+//     },
+//     {
+//       value: '20m',
+//       symbol: new SimpleLineSymbol({
+//         color: bufferColor[1],
+//         width: '3px',
+//         style: 'solid',
+//       }),
+//       label: '20m Buffer',
+//     },
+//   ],
+// });
+
+export const ngcp_line7 = new FeatureLayer({
+  portalItem: {
+    id: 'd5b30a79bdae40c492771ec1e46ab0e9',
+    portal: {
+      url: 'https://gis.railway-sector.com/portal',
+    },
+  },
+  elevationInfo: {
+    mode: 'on-the-ground',
+  },
+  renderer: ngcpLineRenderer,
+  layerId: 1,
+  title: 'NGCP Line for Site 7',
+});
+
+/* NGCP Pole site */
+const ngcpDpwhRoadRenderer = new SimpleRenderer({
+  symbol: new SimpleFillSymbol({
+    color: [255, 255, 0],
+    style: 'backward-diagonal',
+    outline: {
+      color: '#FFFF00',
+      width: 0.7,
+    },
+  }),
+});
+
+export const ngcp_pole7 = new FeatureLayer({
+  portalItem: {
+    id: 'd5b30a79bdae40c492771ec1e46ab0e9',
+    portal: {
+      url: 'https://gis.railway-sector.com/portal',
+    },
+  },
+  layerId: 2,
+  renderer: ngcpDpwhRoadRenderer,
+  elevationInfo: {
+    mode: 'on-the-ground',
+  },
+  popupEnabled: false,
+  title: 'NGCP Pole for Site 7',
+});
+
 /* PNR */
 let pnrRenderer = new UniqueValueRenderer({
   valueExpression:

@@ -22,6 +22,9 @@ import {
   strucOwnershipLayer,
   handedOverLotLayer,
   //superUrgentLotLayer,
+  ngcp_line7,
+  ngcp_pole7,
+  ngcp_working_area7,
 } from './layers';
 import { highlightLot } from './Query';
 import Zoom from '@arcgis/core/widgets/Zoom';
@@ -51,7 +54,7 @@ const lotGroupLayer = new GroupLayer({
   title: 'Land',
   visible: true,
   visibilityMode: 'independent',
-  layers: [lotLayer, handedOverLotLayer, pnrLayer],
+  layers: [ngcp_line7, ngcp_pole7, ngcp_working_area7, lotLayer, handedOverLotLayer, pnrLayer],
 });
 
 // Change the layer order by using index numbers in map.add
