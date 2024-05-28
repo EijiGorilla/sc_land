@@ -195,7 +195,7 @@ export const ngcp_working_area7 = new FeatureLayer({
     mode: 'on-the-ground',
   },
   layerId: 3,
-  title: 'NGCP Working Area for Site 7',
+  title: 'Proposed Pole Working Areas',
 });
 
 /* NGCP Line  */
@@ -246,7 +246,7 @@ export const ngcp_line7 = new FeatureLayer({
   },
   renderer: ngcpLineRenderer,
   layerId: 1,
-  title: 'NGCP Line for Site 7',
+  title: 'Proposed/Recorded NGCP Lines',
 });
 
 /* NGCP Pole site */
@@ -274,7 +274,7 @@ export const ngcp_pole7 = new FeatureLayer({
     mode: 'on-the-ground',
   },
   popupEnabled: false,
-  title: 'NGCP Pole for Site 7',
+  title: 'Proposed Pole Relocation',
 });
 
 /* PNR */

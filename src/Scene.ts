@@ -57,9 +57,17 @@ const lotGroupLayer = new GroupLayer({
   layers: [ngcp_line7, ngcp_pole7, ngcp_working_area7, lotLayer, handedOverLotLayer, pnrLayer],
 });
 
+const ngcp_groupLayer = new GroupLayer({
+  title: 'NGCP',
+  visible: true,
+  visibilityMode: 'independent',
+  layers: [ngcp_line7, ngcp_pole7, ngcp_working_area7],
+});
+
 // Change the layer order by using index numbers in map.add
 map.add(pierAccessLayer);
 map.add(lotGroupLayer);
+map.add(ngcp_groupLayer);
 map.add(structureLayer);
 map.add(nloLoOccupancyGroupLayer);
 map.add(alignmentGroupLayer);
