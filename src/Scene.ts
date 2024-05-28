@@ -25,6 +25,7 @@ import {
   ngcp_line7,
   ngcp_pole7,
   ngcp_working_area7,
+  prow_tunnelLayer,
 } from './layers';
 import { highlightLot } from './Query';
 import Zoom from '@arcgis/core/widgets/Zoom';
@@ -40,7 +41,7 @@ const alignmentGroupLayer = new GroupLayer({
   title: 'Alignment',
   visible: true,
   visibilityMode: 'independent',
-  layers: [stationBoxLayer, chainageLayer],
+  layers: [stationBoxLayer, chainageLayer, prow_tunnelLayer],
 }); //map.add(alignmentGroupLayer, 0);
 
 const nloLoOccupancyGroupLayer = new GroupLayer({
@@ -59,7 +60,7 @@ const lotGroupLayer = new GroupLayer({
 
 const ngcp_groupLayer = new GroupLayer({
   title: 'NGCP',
-  visible: true,
+  visible: false,
   visibilityMode: 'independent',
   layers: [ngcp_line7, ngcp_pole7, ngcp_working_area7],
 });
@@ -121,7 +122,10 @@ export const layerList = new LayerList({
     item.title === 'Handed-Over (public + private)' ||
     item.title === 'Structure' ||
     item.title === 'NLO (Non-Land Owner)' ||
-    item.title === 'Occupancy (Structure)'
+    item.title === 'Occupancy (Structure)' ||
+    item.title === 'Proposed Pole Working Areas' ||
+    item.title === 'Proposed/Recorded NGCP Lines' ||
+    item.title === 'Proposed Pole Relocation'
       ? (item.visible = false)
       : (item.visible = true);
   },

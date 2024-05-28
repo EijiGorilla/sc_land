@@ -207,32 +207,6 @@ const ngcpLineRenderer = new SimpleRenderer({
     style: 'dash',
   }),
 });
-// const ngcpRowRenderer = new UniqueValueRenderer({
-//   legendOptions: {
-//     title: 'Proposed ROW (Corridor)',
-//   },
-//   field: 'Type',
-//   uniqueValueInfos: [
-//     {
-//       value: '15m',
-//       symbol: new SimpleLineSymbol({
-//         color: bufferColor[0],
-//         width: '3px',
-//         style: 'dash',
-//       }),
-//       label: '15m Buffer',
-//     },
-//     {
-//       value: '20m',
-//       symbol: new SimpleLineSymbol({
-//         color: bufferColor[1],
-//         width: '3px',
-//         style: 'solid',
-//       }),
-//       label: '20m Buffer',
-//     },
-//   ],
-// });
 
 export const ngcp_line7 = new FeatureLayer({
   portalItem: {
@@ -250,6 +224,46 @@ export const ngcp_line7 = new FeatureLayer({
 });
 
 /* NGCP Pole site */
+var label_ngcp_pole = new LabelClass({
+  symbol: new LabelSymbol3D({
+    symbolLayers: [
+      new TextSymbol3DLayer({
+        material: {
+          color: [255, 255, 0],
+        },
+        size: 15,
+        halo: {
+          color: 'black',
+          size: 0.5,
+        },
+        // font: {
+        //   family: 'Ubuntu Mono',
+        //   //weight: "bold"
+        // },
+      }),
+    ],
+    verticalOffset: {
+      screenLength: 30,
+      maxWorldLength: 20,
+      minWorldLength: 10,
+    },
+
+    callout: {
+      type: 'line', // autocasts as new LineCallout3D()
+      color: [128, 128, 128, 0.5],
+      size: 0.2,
+      border: {
+        color: 'grey',
+      },
+    },
+  }),
+  labelPlacement: 'above-center',
+  labelExpressionInfo: {
+    expression: '$feature.POLE_ID',
+    //value: "{TEXTSTRING}"
+  },
+});
+
 const ngcpDpwhRoadRenderer = new SimpleRenderer({
   symbol: new SimpleFillSymbol({
     color: [255, 255, 0],
@@ -270,11 +284,36 @@ export const ngcp_pole7 = new FeatureLayer({
   },
   layerId: 2,
   renderer: ngcpDpwhRoadRenderer,
+  labelingInfo: [label_ngcp_pole],
   elevationInfo: {
     mode: 'on-the-ground',
   },
-  popupEnabled: false,
+  popupEnabled: true,
   title: 'Proposed Pole Relocation',
+});
+
+/* PROW for SC Tunnel Alignment */
+const prow_tunnel_renderer = new SimpleRenderer({
+  symbol: new SimpleLineSymbol({
+    color: '#ff0000',
+    width: '3px',
+    style: 'dash',
+  }),
+});
+
+export const prow_tunnelLayer = new FeatureLayer({
+  portalItem: {
+    id: '63605177aec648e5b3ad232d2b181874',
+    portal: {
+      url: 'https://gis.railway-sector.com/portal',
+    },
+  },
+  elevationInfo: {
+    mode: 'on-the-ground',
+  },
+  renderer: prow_tunnel_renderer,
+  popupEnabled: false,
+  title: 'PROW for Tunnel Alignment',
 });
 
 /* PNR */
