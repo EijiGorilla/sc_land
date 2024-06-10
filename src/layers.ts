@@ -1224,7 +1224,7 @@ const pierAccessReadyDateLabel = new LabelClass({
   }),
   labelExpressionInfo: {
     expression: `var accessdate = $feature.AccessDate;
-                  var cutoffDate = 1700011031473;
+                  var cutoffDate = 1718062335146;
                   var labelPier = when($feature.AccessDate <= cutoffDate, $feature.PIER, '');
                   return \`\${labelPier}\`
                   `,
@@ -1262,7 +1262,7 @@ const pierAccessNotYetLabel = new LabelClass({
   }),
   labelExpressionInfo: {
     expression: `var accessdate = $feature.AccessDate;
-                  var cutoffDate = 1700011031473;
+                  var cutoffDate = 1718062335146;
                   var labelPier = when($feature.AccessDate > cutoffDate || isEmpty($feature.AccessDate), $feature.PIER, '');
                   return \`\${labelPier}\`
                   `,
