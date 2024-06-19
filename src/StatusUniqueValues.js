@@ -59,13 +59,14 @@ export const lotMoaStatusQuery = lotMoaStatus.map((status, index) => {
 // Structure
 export const structureStatusField = 'StatusStruc';
 export const structureStatusLabel = [
-  'Dismantling/Clearing',
+  'Demolished',
   'Paid',
   'For Payment Processing',
   'For Legal Pass',
-  'For Appraisal/Offer to Compensation',
-  'LBP Account Opening',
+  'For Offer to Compensation',
+  'For Notice of Taking',
 ];
+
 export const structureStatusColorHex = [
   '#00C5FF',
   '#70AD47',
