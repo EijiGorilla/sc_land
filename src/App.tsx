@@ -76,6 +76,14 @@ function App() {
   const NloChart = loadable(() => import('./components/NloChart'));
   const StructureChart = loadable(() => import('./components/StructureChart'));
 
+  //
+  const [lotLayerLoaded, setLotLayerLoaded] = useState<any>();
+  useEffect(() => {
+    lotLayer.load().then(() => {
+      setLotLayerLoaded(lotLayer.loadStatus);
+    });
+  });
+
   //**** Create dropdonw list */
   useEffect(() => {
     const dropdownData = new DropDownData({
@@ -485,7 +493,7 @@ function App() {
         </div>
 
         {/* Lot progress chart is loaded ONLY when charts widget is clicked. */}
-        {nextWidget === 'charts' && nextWidget !== activeWidget ? (
+        {nextWidget === 'charts' && nextWidget !== activeWidget && lotLayerLoaded === 'loaded' ? (
           <LotProgressChart
             municipal={municipality === null ? '' : municipality.field1}
             barangay={barangay === null ? '' : barangay.name}
