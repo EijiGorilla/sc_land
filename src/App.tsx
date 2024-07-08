@@ -209,10 +209,12 @@ function App() {
           </CalciteTabNav>
           {/* CalciteTab: Lot */}
           <CalciteTab>
-            <LotChart
-              municipal={municipality === null ? '' : municipality.field1}
-              barangay={barangay === null ? '' : barangay.name}
-            />
+            {lotLayerLoaded === 'loaded' && (
+              <LotChart
+                municipal={municipality === null ? '' : municipality.field1}
+                barangay={barangay === null ? '' : barangay.name}
+              />
+            )}
           </CalciteTab>
           {/* CalciteTab: Structure */}
           <CalciteTab>
