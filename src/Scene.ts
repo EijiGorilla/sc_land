@@ -26,6 +26,9 @@ import {
   ngcp_pole7,
   ngcp_working_area7,
   prow_tunnelLayer,
+  ngcp_line6,
+  ngcp_pole6,
+  ngcp_working_area6,
 } from './layers';
 import { highlightLot } from './Query';
 import Zoom from '@arcgis/core/widgets/Zoom';
@@ -55,12 +58,20 @@ const lotGroupLayer = new GroupLayer({
   title: 'Land',
   visible: true,
   visibilityMode: 'independent',
-  layers: [ngcp_line7, ngcp_pole7, ngcp_working_area7, lotLayer, handedOverLotLayer, pnrLayer],
+  layers: [lotLayer, handedOverLotLayer, pnrLayer],
 });
 
-const ngcp_groupLayer = new GroupLayer({
-  title: 'NGCP',
+const ngcp6_groupLayer = new GroupLayer({
+  title: 'NGCP Site 6',
   visible: false,
+  visibilityMode: 'independent',
+  layers: [ngcp_line6, ngcp_pole6, ngcp_working_area6],
+});
+
+const ngcp7_groupLayer = new GroupLayer({
+  title: 'NGCP Site 7',
+  visible: false,
+  // listMode: 'hide-children',
   visibilityMode: 'independent',
   layers: [ngcp_line7, ngcp_pole7, ngcp_working_area7],
 });
@@ -68,7 +79,8 @@ const ngcp_groupLayer = new GroupLayer({
 // Change the layer order by using index numbers in map.add
 map.add(pierAccessLayer);
 map.add(lotGroupLayer);
-map.add(ngcp_groupLayer);
+map.add(ngcp7_groupLayer);
+map.add(ngcp6_groupLayer);
 map.add(structureLayer);
 map.add(nloLoOccupancyGroupLayer);
 map.add(alignmentGroupLayer);
@@ -100,6 +112,7 @@ export const layerList = new LayerList({
   view: view,
   selectionMode: 'multiple',
   visibilityAppearance: 'checkbox',
+
   container: undefined,
   listItemCreatedFunction: (event) => {
     const item = event.item;

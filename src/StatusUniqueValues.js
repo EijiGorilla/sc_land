@@ -65,6 +65,7 @@ export const structureStatusLabel = [
   'For Legal Pass',
   'For Offer to Compensate',
   'For Notice of Taking',
+  'No Need to Acquire',
 ];
 
 export const structureStatusColorHex = [
@@ -74,6 +75,7 @@ export const structureStatusColorHex = [
   '#FFFF00',
   '#FFAA00',
   '#FF5349',
+  '#B2BEB5',
 ];
 export const structureStatusColorRgb = [
   [0, 197, 255, 0.6],
@@ -82,6 +84,7 @@ export const structureStatusColorRgb = [
   [255, 255, 0, 0.6],
   [255, 170, 0, 0.6],
   [255, 83, 73, 0.6],
+  [178, 190, 181, 0.6],
 ];
 
 export const structureStatusQuery = structureStatusLabel.map((status, index) => {

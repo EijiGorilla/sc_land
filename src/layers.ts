@@ -194,7 +194,24 @@ export const ngcp_working_area7 = new FeatureLayer({
   elevationInfo: {
     mode: 'on-the-ground',
   },
-  layerId: 3,
+  definitionExpression: "SiteNo = '7'",
+  layerId: 2,
+  title: 'Proposed Pole Working Areas',
+});
+
+export const ngcp_working_area6 = new FeatureLayer({
+  portalItem: {
+    id: 'd5b30a79bdae40c492771ec1e46ab0e9',
+    portal: {
+      url: 'https://gis.railway-sector.com/portal',
+    },
+  },
+  renderer: ngcpPoleWARenderer,
+  elevationInfo: {
+    mode: 'on-the-ground',
+  },
+  definitionExpression: "SiteNo = '6'",
+  layerId: 2,
   title: 'Proposed Pole Working Areas',
 });
 
@@ -219,6 +236,23 @@ export const ngcp_line7 = new FeatureLayer({
     mode: 'on-the-ground',
   },
   renderer: ngcpLineRenderer,
+  definitionExpression: "SiteNo = '7'",
+  layerId: 1,
+  title: 'Proposed/Recorded NGCP Lines',
+});
+
+export const ngcp_line6 = new FeatureLayer({
+  portalItem: {
+    id: 'd5b30a79bdae40c492771ec1e46ab0e9',
+    portal: {
+      url: 'https://gis.railway-sector.com/portal',
+    },
+  },
+  elevationInfo: {
+    mode: 'on-the-ground',
+  },
+  renderer: ngcpLineRenderer,
+  definitionExpression: "SiteNo = '6'",
   layerId: 1,
   title: 'Proposed/Recorded NGCP Lines',
 });
@@ -282,7 +316,26 @@ export const ngcp_pole7 = new FeatureLayer({
       url: 'https://gis.railway-sector.com/portal',
     },
   },
-  layerId: 2,
+  definitionExpression: "SiteNo = '7'",
+  layerId: 3,
+  renderer: ngcpDpwhRoadRenderer,
+  labelingInfo: [label_ngcp_pole],
+  elevationInfo: {
+    mode: 'on-the-ground',
+  },
+  popupEnabled: true,
+  title: 'Proposed Pole Relocation',
+});
+
+export const ngcp_pole6 = new FeatureLayer({
+  portalItem: {
+    id: 'd5b30a79bdae40c492771ec1e46ab0e9',
+    portal: {
+      url: 'https://gis.railway-sector.com/portal',
+    },
+  },
+  definitionExpression: "SiteNo = '6'",
+  layerId: 3,
   renderer: ngcpDpwhRoadRenderer,
   labelingInfo: [label_ngcp_pole],
   elevationInfo: {
