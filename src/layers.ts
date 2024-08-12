@@ -371,11 +371,10 @@ export const prow_tunnelLayer = new FeatureLayer({
 
 /* PNR */
 let pnrRenderer = new UniqueValueRenderer({
-  valueExpression:
-    "When($feature.LandOwner == 'BASES CONVERSION DEVELOPMENT AUTHORITY', 'BCDA', $feature.LandOwner == 'MANILA RAILROAD COMPANY' || $feature.LandOwner == 'Manila Railroad Company','PNR',$feature.LandOwner)",
+  field: 'OwnershipType',
   uniqueValueInfos: [
     {
-      value: 'BCDA',
+      value: 1, // RP
       symbol: new SimpleFillSymbol({
         color: [137, 205, 102],
         style: 'diagonal-cross',
@@ -386,7 +385,7 @@ let pnrRenderer = new UniqueValueRenderer({
       }),
     },
     {
-      value: 'PNR',
+      value: 2, // PNR
       symbol: new SimpleFillSymbol({
         color: [137, 205, 102],
         style: 'diagonal-cross',
@@ -407,10 +406,8 @@ export const pnrLayer = new FeatureLayer({
     },
   },
   layerId: 1,
-  title: 'Land (PNR)',
-  definitionExpression:
-    "LandOwner IN ('BASES CONVERSION DEVELOPMENT AUTHORITY','MANILA RAILROAD COMPANY')",
-
+  title: 'Land (Excluded for Acquisition)',
+  definitionExpression: 'OwnershipType IN (1, 2)',
   elevationInfo: {
     mode: 'on-the-ground',
   },
@@ -424,6 +421,10 @@ export const pnrLayer = new FeatureLayer({
       {
         type: 'fields',
         fieldInfos: [
+          {
+            fieldName: 'OwnershipType',
+            label: 'Ownership Type',
+          },
           {
             fieldName: 'HandOverDate',
             label: 'Hand-Over Date',

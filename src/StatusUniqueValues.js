@@ -4,9 +4,10 @@ export const lotStatusLabel = [
   'Paid',
   'For Payment Processing',
   'For Legal Pass',
-  'For Appraisal/Offer to Buy',
-  'For Expro',
+  'For Offer to Buy',
+  'For Notice of Taking',
   'With PTE',
+  'For Expropriation',
   'For Harmonization',
 ];
 
@@ -15,8 +16,9 @@ export const lotStatusColor = [
   '#0070ff',
   '#ffff00',
   '#ffaa00',
-  '#ff0000',
+  '#FF5733',
   '#70AD47',
+  '#FF0000',
   '#B2B2B2',
 ];
 export const lotStatusQuery = lotStatusLabel.map((status, index) => {
