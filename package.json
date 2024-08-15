@@ -1,12 +1,12 @@
 {
   "homepage": "https://eijigorilla.github.io/sc_land",
   "name": "sc_land",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": true,
   "dependencies": {
     "@amcharts/amcharts5": "^5.5.6",
-    "@arcgis/core": "^4.29.10",
-    "@esri/calcite-components-react": "^1.11.0",
+    "@arcgis/core": "^4.30.9",
+    "@esri/calcite-components-react": "^2.8.5",
     "@loadable/component": "^5.15.3",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",

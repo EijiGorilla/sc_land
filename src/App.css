@@ -79,6 +79,10 @@ calcite-list {
   --calcite-color-border-3: #555555;
 }
 
+#layers-container {
+  overflow-y: auto;
+}
+
 #result-list {
   overflow-y: auto;
   --calcite-color-text-1: #ff0000;
@@ -105,11 +109,6 @@ calcite-list {
   background-color: #00c5ff;
   color: #202020;
 } */
-
-::-webkit-scrollbar {
-  width: 5px;
-  display: none;
-}
 
 .esri-legend__layer-caption {
   display: none;
@@ -185,4 +184,29 @@ calcite-list {
   font-size: 13px;
   margin-left: -10px;
   padding-right: 5px;
+}
+
+.esri-legend * {
+  background-color: #2b2b2b;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #00032235;
+
+  /*#032235*/
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #00032235;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #00032235;
 }

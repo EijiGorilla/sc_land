@@ -112,7 +112,6 @@ export const layerList = new LayerList({
   view: view,
   selectionMode: 'multiple',
   visibilityAppearance: 'checkbox',
-
   container: undefined,
   listItemCreatedFunction: (event) => {
     const item = event.item;
@@ -196,7 +195,7 @@ const searchWidget = new Search({
 export const searchExpand = new Expand({
   view: view,
   content: searchWidget,
-  expandIconClass: 'esri-icon-search',
+  expandIcon: 'chevrons-right',
   group: 'top-right',
 });
 
