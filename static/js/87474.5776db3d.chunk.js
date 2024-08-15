@@ -1,2 +1,0 @@
-/*! For license information please see 87474.5776db3d.chunk.js.LICENSE.txt */
-"use strict";(self.webpackChunksc_land=self.webpackChunksc_land||[]).push([[87474],{87474:(e,s,c)=>{c.r(s),c.d(s,{CalciteIcon:()=>a,defineCustomElement:()=>l});var n=c(57601);const a=n.I,l=n.d}}]);

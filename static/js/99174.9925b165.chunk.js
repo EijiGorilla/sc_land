@@ -1,2 +1,0 @@
-/*! For license information please see 99174.9925b165.chunk.js.LICENSE.txt */
-"use strict";(self.webpackChunksc_land=self.webpackChunksc_land||[]).push([[99174],{99174:(e,s,c)=>{c.r(s),c.d(s,{CalciteScrim:()=>a,defineCustomElement:()=>l});var n=c(69874);const a=n.S,l=n.d}}]);
