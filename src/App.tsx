@@ -201,7 +201,7 @@ function App() {
   return (
     <div>
       <CalciteShell>
-        <CalciteTabs slot="panel-end" layout="center" scale="l">
+        <CalciteTabs style={{ width: '30%' }} slot="panel-end" layout="center" scale="l">
           <CalciteTabNav slot="title-group" id="thetabs">
             <CalciteTabTitle class="Land">Land</CalciteTabTitle>
             <CalciteTabTitle class="Structure">Structure</CalciteTabTitle>
@@ -235,7 +235,7 @@ function App() {
 
           {/* CalciteTab: List of Lots under Expropriation */}
           <CalciteTab>
-            <div style={{ width: '350px' }}>
+            <div>
               <ExpropriationList
                 municipal={municipality === null ? '' : municipality.field1}
                 barangay={barangay === null ? '' : barangay.name}
