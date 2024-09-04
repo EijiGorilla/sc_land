@@ -235,10 +235,12 @@ function App() {
 
           {/* CalciteTab: List of Lots under Expropriation */}
           <CalciteTab>
-            <ExpropriationList
-              municipal={municipality === null ? '' : municipality.field1}
-              barangay={barangay === null ? '' : barangay.name}
-            />
+            <div style={{ width: '350px' }}>
+              <ExpropriationList
+                municipal={municipality === null ? '' : municipality.field1}
+                barangay={barangay === null ? '' : barangay.name}
+              />
+            </div>
           </CalciteTab>
         </CalciteTabs>
 
