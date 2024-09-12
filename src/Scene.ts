@@ -6,6 +6,7 @@ import Search from '@arcgis/core/widgets/Search';
 import Expand from '@arcgis/core/widgets/Expand';
 import GroupLayer from '@arcgis/core/layers/GroupLayer';
 import Locate from '@arcgis/core/widgets/Locate.js';
+import Compass from '@arcgis/core/widgets/Compass';
 import {
   lotLayer,
   nloLayer,
@@ -213,4 +214,9 @@ export const measurement = new Measurement({
   view: view,
   activeTool: undefined,
   container: undefined,
+});
+
+// Compass
+export const compass = new Compass({
+  view: view,
 });
