@@ -30,6 +30,7 @@ import {
   ngcp_line6,
   ngcp_pole6,
   ngcp_working_area6,
+  tunnelAffectedLotLayer,
 } from './layers';
 import { highlightLot } from './Query';
 import Zoom from '@arcgis/core/widgets/Zoom';
@@ -59,7 +60,7 @@ const lotGroupLayer = new GroupLayer({
   title: 'Land',
   visible: true,
   visibilityMode: 'independent',
-  layers: [lotLayer, handedOverLotLayer, pnrLayer],
+  layers: [lotLayer, handedOverLotLayer, tunnelAffectedLotLayer, pnrLayer],
 });
 
 const ngcp6_groupLayer = new GroupLayer({
@@ -127,12 +128,15 @@ export const layerList = new LayerList({
       // highlightLot(superUrgentLotLayer);
     } else if (item.title === 'Handed-Over (public + private)') {
       highlightLot(handedOverLotLayer);
+    } else if (item.title === 'Tunnel Affected') {
+      highlightLot(tunnelAffectedLotLayer);
     }
 
     item.title === 'Chainage' ||
     item.title === 'NLO/LO Ownership (Structure)' ||
     item.title === 'Super Urgent Lot' ||
     item.title === 'Handed-Over (public + private)' ||
+    item.title === 'Tunnel Affected' ||
     item.title === 'Structure' ||
     item.title === 'NLO (Non-Land Owner)' ||
     item.title === 'Occupancy (Structure)' ||

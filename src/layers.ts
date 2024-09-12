@@ -652,6 +652,41 @@ export const handedOverLotLayer = new FeatureLayer({
   },
 });
 
+const tunnelAffectedLotRenderer = new UniqueValueRenderer({
+  field: 'TunnelAffected',
+  uniqueValueInfos: [
+    {
+      value: 1,
+      label: 'Tunnel Affected',
+      symbol: new SimpleFillSymbol({
+        color: [255, 0, 0, 0],
+        outline: {
+          color: '#00c5ff',
+          width: 0.3,
+        },
+      }),
+    },
+  ],
+});
+
+export const tunnelAffectedLotLayer = new FeatureLayer({
+  portalItem: {
+    id: '99500faf0251426ea1df934a739faa6f',
+    portal: {
+      url: 'https://gis.railway-sector.com/portal',
+    },
+  },
+  layerId: 1,
+  definitionExpression: 'TunnelAffected = 1',
+  renderer: tunnelAffectedLotRenderer,
+  popupEnabled: false,
+  labelsVisible: false,
+  title: 'Tunnel Affected',
+  elevationInfo: {
+    mode: 'on-the-ground',
+  },
+});
+
 /* Endorsed Lot Layer */
 // Endorsed lot layer
 // let endorsedLayerRenderer = new UniqueValueRenderer({
