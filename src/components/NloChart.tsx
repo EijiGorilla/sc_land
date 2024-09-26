@@ -9,7 +9,12 @@ import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import am5themes_Responsive from '@amcharts/amcharts5/themes/Responsive';
 import { generateNloData, generateNloNumber, thousands_separators } from '../Query';
 import { CalciteLabel } from '@esri/calcite-components-react';
-import { nloStatusQuery, nloStatusField } from '../StatusUniqueValues';
+import {
+  nloStatusQuery,
+  nloStatusField,
+  primaryLabelColor,
+  valueLabelColor,
+} from '../StatusUniqueValues';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -96,15 +101,33 @@ const NloChart = memo(({ municipal, barangay }: any) => {
         //legendLabelText: "[{fill}]{category}[/]",
         legendValueText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
         radius: am5.percent(45), // outer radius
-        innerRadius: am5.percent(20),
-        scale: 1.8,
+        innerRadius: am5.percent(28),
+        scale: 2.1,
       }),
     );
     pieSeriesRef.current = pieSeries;
     chart.series.push(pieSeries);
 
+    // values inside a donut
+    let inner_label = pieSeries.children.push(
+      am5.Label.new(root, {
+        text: '[#ffffff]{valueSum}[/]\n[fontSize: 5px; #d3d3d3; verticalAlign: super]FAMILIES[/]',
+        fontSize: 13,
+        centerX: am5.percent(50),
+        centerY: am5.percent(40),
+        populateText: true,
+        oversizedBehavior: 'fit',
+        textAlign: 'center',
+      }),
+    );
+
+    pieSeries.onPrivate('width', (width: any) => {
+      inner_label.set('maxWidth', width * 0.7);
+    });
+
     // Set slice opacity and stroke color
     pieSeries.slices.template.setAll({
+      toggleKey: 'none',
       fillOpacity: 0.9,
       stroke: am5.color('#ffffff'),
       strokeWidth: 0.5,
@@ -180,6 +203,7 @@ const NloChart = memo(({ municipal, barangay }: any) => {
       am5.Legend.new(root, {
         centerX: am5.percent(50),
         x: am5.percent(50),
+        scale: 0.9,
       }),
     );
     legendRef.current = legend;
@@ -203,7 +227,7 @@ const NloChart = memo(({ municipal, barangay }: any) => {
     // https://www.amcharts.com/docs/v5/tutorials/pie-chart-with-a-legend-with-dynamically-sized-labels/
     // This aligns Legend to Left
     chart.onPrivate('width', function (width: any) {
-      const boxWidth = 190; //props.style.width;
+      const boxWidth = 230; //props.style.width;
       var availableSpace = Math.max(width - chart.height() - boxWidth, boxWidth);
       //var availableSpace = (boxWidth - valueLabelsWidth) * 0.7
       legend.labels.template.setAll({
@@ -257,7 +281,7 @@ const NloChart = memo(({ municipal, barangay }: any) => {
     <>
       <CalciteLabel>TOTAL NON-LAND OWNERS</CalciteLabel>
       <CalciteLabel layout="inline">
-        <b className="permitToEnterNumber">
+        <b className="permitToEnterNumber" style={{ color: valueLabelColor }}>
           {thousands_separators(nloNumber)}
           <img
             src="https://EijiGorilla.github.io/Symbols/NLO_Logo.svg"

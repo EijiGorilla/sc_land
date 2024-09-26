@@ -203,7 +203,7 @@ function App() {
   return (
     <div>
       <CalciteShell>
-        <CalciteTabs style={{ width: '30%' }} slot="panel-end" layout="center" scale="l">
+        <CalciteTabs slot="panel-end" layout="center" scale="l" style={{ width: '25%' }}>
           <CalciteTabNav slot="title-group" id="thetabs">
             <CalciteTabTitle class="Land">Land</CalciteTabTitle>
             <CalciteTabTitle class="Structure">Structure</CalciteTabTitle>

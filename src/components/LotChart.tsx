@@ -18,7 +18,13 @@ import {
 import '../App.css';
 import '@esri/calcite-components/dist/components/calcite-label';
 import { CalciteLabel } from '@esri/calcite-components-react';
-import { lotMoaStatusQuery, lotStatusField, lotStatusQuery } from '../StatusUniqueValues';
+import {
+  lotMoaStatusQuery,
+  lotStatusField,
+  lotStatusQuery,
+  primaryLabelColor,
+  valueLabelColor,
+} from '../StatusUniqueValues';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -128,15 +134,33 @@ const LotChart = ({ municipal, barangay }: any) => {
         //legendLabelText: "[{fill}]{category}[/]",
         legendValueText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
         radius: am5.percent(45), // outer radius
-        innerRadius: am5.percent(20),
-        scale: 1.8,
+        innerRadius: am5.percent(28),
+        scale: 2.2,
       }),
     );
     pieSeriesRef.current = pieSeries;
     chart.series.push(pieSeries);
 
+    // values inside a donut
+    let inner_label = pieSeries.children.push(
+      am5.Label.new(root, {
+        text: '[#ffffff]{valueSum}[/]\n[fontSize: 5px; #d3d3d3; verticalAlign: super]LOTS[/]',
+        fontSize: 11,
+        centerX: am5.percent(50),
+        centerY: am5.percent(40),
+        populateText: true,
+        oversizedBehavior: 'fit',
+        textAlign: 'center',
+      }),
+    );
+
+    pieSeries.onPrivate('width', (width: any) => {
+      inner_label.set('maxWidth', width * 0.7);
+    });
+
     // Set slice opacity and stroke color
     pieSeries.slices.template.setAll({
+      toggleKey: 'none',
       fillOpacity: 0.9,
       stroke: am5.color('#ffffff'),
       strokeWidth: 0.5,
@@ -220,6 +244,7 @@ const LotChart = ({ municipal, barangay }: any) => {
       am5.Legend.new(root, {
         centerX: am5.percent(50),
         x: am5.percent(50),
+        scale: 0.9,
       }),
     );
     legendRef.current = legend;
@@ -243,7 +268,7 @@ const LotChart = ({ municipal, barangay }: any) => {
     // https://www.amcharts.com/docs/v5/tutorials/pie-chart-with-a-legend-with-dynamically-sized-labels/
     // This aligns Legend to Left
     chart.onPrivate('width', function (width: any) {
-      const boxWidth = 190; //props.style.width;
+      const boxWidth = 230; //props.style.width;
       var availableSpace = Math.max(width - chart.height() - boxWidth, boxWidth);
       //var availableSpace = (boxWidth - valueLabelsWidth) * 0.7
       legend.labels.template.setAll({
@@ -503,16 +528,15 @@ const LotChart = ({ municipal, barangay }: any) => {
     <>
       <CalciteLabel>TOTAL LOTS</CalciteLabel>
       <CalciteLabel layout="inline">
-        <b className="totalLotsNumber">
-          {thousands_separators(lotNumber[1])}
+        <b className="totalLotsNumber" style={{ color: valueLabelColor }}>
+          {thousands_separators(lotNumber[0])}
           <img
             src="https://EijiGorilla.github.io/Symbols/Land_logo.png"
             alt="Land Logo"
-            height={'21%'}
-            width={'21%'}
+            height={'20%'}
+            width={'20%'}
             style={{ marginLeft: '90%', display: 'flex', marginTop: '-17%' }}
           />
-          <div className="totalLotsNumber2">({thousands_separators(lotNumber[0])})</div>
         </b>
       </CalciteLabel>
 
@@ -531,7 +555,7 @@ const LotChart = ({ municipal, barangay }: any) => {
       <CalciteLabel>HANDED-OVER</CalciteLabel>
       <CalciteLabel layout="inline">
         {handedOverNumber[0] === 'Infinity' ? (
-          <b className="permitToEnterNumber">
+          <b className="permitToEnterNumber" style={{ color: valueLabelColor }}>
             N/A
             <img
               src="https://EijiGorilla.github.io/Symbols/Permit-To-Enter.png"
@@ -542,7 +566,7 @@ const LotChart = ({ municipal, barangay }: any) => {
             />
           </b>
         ) : (
-          <b className="permitToEnterNumber">
+          <b className="permitToEnterNumber" style={{ color: valueLabelColor }}>
             {handedOverNumber[0]}% ({thousands_separators(handedOverNumber[1])})
             <img
               src="https://EijiGorilla.github.io/Symbols/Permit-To-Enter.png"

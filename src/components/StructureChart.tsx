@@ -16,10 +16,12 @@ import {
 } from '../Query';
 import { CalciteLabel } from '@esri/calcite-components-react';
 import {
+  primaryLabelColor,
   structureMoaField,
   structureMoaQuery,
   structureStatusField,
   structureStatusQuery,
+  valueLabelColor,
 } from '../StatusUniqueValues';
 
 // Dispose function
@@ -124,12 +126,29 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
         //legendLabelText: "[{fill}]{category}[/]",
         legendValueText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
         radius: am5.percent(45), // outer radius
-        innerRadius: am5.percent(20),
-        scale: 1.8,
+        innerRadius: am5.percent(28),
+        scale: 2.2,
       }),
     );
     pieSeriesRef.current = pieSeries;
     chart.series.push(pieSeries);
+
+    // values inside a donut
+    let inner_label = pieSeries.children.push(
+      am5.Label.new(root, {
+        text: '[#ffffff]{valueSum}[/]\n[fontSize: 5px; #d3d3d3; verticalAlign: super]STRUCTURES[/]',
+        fontSize: 13,
+        centerX: am5.percent(50),
+        centerY: am5.percent(40),
+        populateText: true,
+        oversizedBehavior: 'fit',
+        textAlign: 'center',
+      }),
+    );
+
+    pieSeries.onPrivate('width', (width: any) => {
+      inner_label.set('maxWidth', width * 0.7);
+    });
 
     // Set slice opacity and stroke color
     pieSeries.slices.template.setAll({
@@ -138,6 +157,7 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
       strokeWidth: 0.5,
       strokeOpacity: 1,
       templateField: 'sliceSettings',
+      toggleKey: 'none',
     });
 
     // Disabling labels and ticksll
@@ -207,6 +227,7 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
       am5.Legend.new(root, {
         centerX: am5.percent(50),
         x: am5.percent(50),
+        scale: 0.9,
       }),
     );
     legendRef.current = legend;
@@ -230,7 +251,7 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
     // https://www.amcharts.com/docs/v5/tutorials/pie-chart-with-a-legend-with-dynamically-sized-labels/
     // This aligns Legend to Left
     chart.onPrivate('width', function (width: any) {
-      const boxWidth = 190; //props.style.width;
+      const boxWidth = 220; //props.style.width;
       var availableSpace = Math.max(width - chart.height() - boxWidth, boxWidth);
       //var availableSpace = (boxWidth - valueLabelsWidth) * 0.7
       legend.labels.template.setAll({
@@ -513,7 +534,7 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
       <CalciteLabel>PERMIT-TO-ENTER</CalciteLabel>
       <CalciteLabel layout="inline">
         {structureNumber[1] === 0 ? (
-          <b className="permitToEnterNumber">
+          <b className="permitToEnterNumber" style={{ color: valueLabelColor }}>
             {structureNumber[0]}% (0)
             <img
               src="https://EijiGorilla.github.io/Symbols/Permit-To-Enter.png"
@@ -524,7 +545,7 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
             />
           </b>
         ) : (
-          <b className="permitToEnterNumber">
+          <b className="permitToEnterNumber" style={{ color: valueLabelColor }}>
             {structureNumber[0]}% ({thousands_separators(structureNumber[1])})
             <img
               src="https://EijiGorilla.github.io/Symbols/Permit-To-Enter.png"
