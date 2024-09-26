@@ -1,9 +1,9 @@
 {
   "files": {
-    "main.css": "/sc_land/static/css/main.aafd4ada.css",
-    "main.js": "/sc_land/static/js/main.fbfd3b90.js",
-    "static/js/6935.032ee849.chunk.js": "/sc_land/static/js/6935.032ee849.chunk.js",
-    "static/js/3583.99cec287.chunk.js": "/sc_land/static/js/3583.99cec287.chunk.js",
+    "main.css": "/sc_land/static/css/main.33fc77c4.css",
+    "main.js": "/sc_land/static/js/main.fe47cf8a.js",
+    "static/js/6935.5c8ef358.chunk.js": "/sc_land/static/js/6935.5c8ef358.chunk.js",
+    "static/js/3583.bd019570.chunk.js": "/sc_land/static/js/3583.bd019570.chunk.js",
     "static/js/6077.614ee385.chunk.js": "/sc_land/static/js/6077.614ee385.chunk.js",
     "static/js/7305.6d18faa4.chunk.js": "/sc_land/static/js/7305.6d18faa4.chunk.js",
     "static/js/8895.4df243e2.chunk.js": "/sc_land/static/js/8895.4df243e2.chunk.js",
@@ -414,10 +414,10 @@
     "index.html": "/sc_land/index.html",
     "static/media/SM-Slider_TrackBackground_hover.svg": "/sc_land/static/media/SM-Slider_TrackBackground_hover.5dcf34ac7d59f98735ad.svg",
     "static/media/SM-Slider_TrackBackground_idle.svg": "/sc_land/static/media/SM-Slider_TrackBackground_idle.cc7bd7014a003ba1844f.svg",
-    "main.aafd4ada.css.map": "/sc_land/static/css/main.aafd4ada.css.map",
-    "main.fbfd3b90.js.map": "/sc_land/static/js/main.fbfd3b90.js.map",
-    "6935.032ee849.chunk.js.map": "/sc_land/static/js/6935.032ee849.chunk.js.map",
-    "3583.99cec287.chunk.js.map": "/sc_land/static/js/3583.99cec287.chunk.js.map",
+    "main.33fc77c4.css.map": "/sc_land/static/css/main.33fc77c4.css.map",
+    "main.fe47cf8a.js.map": "/sc_land/static/js/main.fe47cf8a.js.map",
+    "6935.5c8ef358.chunk.js.map": "/sc_land/static/js/6935.5c8ef358.chunk.js.map",
+    "3583.bd019570.chunk.js.map": "/sc_land/static/js/3583.bd019570.chunk.js.map",
     "6077.614ee385.chunk.js.map": "/sc_land/static/js/6077.614ee385.chunk.js.map",
     "7305.6d18faa4.chunk.js.map": "/sc_land/static/js/7305.6d18faa4.chunk.js.map",
     "8895.4df243e2.chunk.js.map": "/sc_land/static/js/8895.4df243e2.chunk.js.map",
@@ -712,7 +712,7 @@
     "6896.59d62bc4.chunk.js.map": "/sc_land/static/js/6896.59d62bc4.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.aafd4ada.css",
-    "static/js/main.fbfd3b90.js"
+    "static/css/main.33fc77c4.css",
+    "static/js/main.fe47cf8a.js"
   ]
 }
