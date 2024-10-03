@@ -558,10 +558,10 @@ const LotChart = ({ municipal, barangay }: any) => {
           <b className="permitToEnterNumber" style={{ color: valueLabelColor }}>
             N/A
             <img
-              src="https://EijiGorilla.github.io/Symbols/Permit-To-Enter.png"
+              src="https://EijiGorilla.github.io/Symbols/Land_Acquisition/Handed_Over.svg"
               alt="Land Logo"
-              height={'18%'}
-              width={'18%'}
+              height={'14%'}
+              width={'14%'}
               style={{ marginLeft: '70%', display: 'flex', marginTop: '-10%' }}
             />
           </b>
@@ -569,10 +569,10 @@ const LotChart = ({ municipal, barangay }: any) => {
           <b className="permitToEnterNumber" style={{ color: valueLabelColor }}>
             {handedOverNumber[0]}% ({thousands_separators(handedOverNumber[1])})
             <img
-              src="https://EijiGorilla.github.io/Symbols/Permit-To-Enter.png"
+              src="https://EijiGorilla.github.io/Symbols/Land_Acquisition/Handed_Over.svg"
               alt="Land Logo"
-              height={'18%'}
-              width={'18%'}
+              height={'14%'}
+              width={'14%'}
               style={{ marginLeft: '70%', display: 'flex', marginTop: '-10%' }}
             />
           </b>
