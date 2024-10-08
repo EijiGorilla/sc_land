@@ -31,6 +31,7 @@ import {
   ngcp_pole6,
   ngcp_working_area6,
   tunnelAffectedLotLayer,
+  somco_fense_layer,
 } from './layers';
 import { highlightLot } from './Query';
 import Zoom from '@arcgis/core/widgets/Zoom';
@@ -89,6 +90,7 @@ map.add(alignmentGroupLayer);
 map.add(prowLayer);
 map.add(stationLayer);
 map.add(pierHeadColumnLayer);
+map.add(somco_fense_layer);
 
 export const view = new SceneView({
   container: undefined,

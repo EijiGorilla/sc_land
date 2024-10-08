@@ -12,6 +12,9 @@ import {
   PointSymbol3D,
   IconSymbol3DLayer,
   SimpleMarkerSymbol,
+  LineSymbol3D,
+  PathSymbol3DLayer,
+  LineSymbol3DLayer,
 } from '@arcgis/core/symbols';
 import SolidEdges3D from '@arcgis/core/symbols/edges/SolidEdges3D';
 import CustomContent from '@arcgis/core/popup/content/CustomContent';
@@ -34,7 +37,8 @@ import {
   structureStatusField,
   structureStatusLabel,
 } from './StatusUniqueValues';
-
+import { circle } from '@amcharts/amcharts5/.internal/core/util/Ease';
+import LineStylePattern3D from '@arcgis/core/symbols/patterns/LineStylePattern3D';
 /* Standalone table for Dates */
 export const dateTable = new FeatureLayer({
   portalItem: {
@@ -43,6 +47,60 @@ export const dateTable = new FeatureLayer({
       url: 'https://gis.railway-sector.com/portal',
     },
   },
+});
+
+/* SOMCO Fence */
+// const line_3d = new LineSymbol3D({
+//   symbolLayers: [
+//     new LineSymbol3DLayer({
+//       size: 5,
+//       material: { color: 'yellow' },
+//       cap: 'round',
+//       join: 'round',
+//       pattern: new LineStylePattern3D({
+//         style: 'solid',
+//       }),
+//     }),
+//   ],
+// });
+
+const line_3d = new LineSymbol3D({
+  symbolLayers: [
+    new PathSymbol3DLayer({
+      profile: 'quad',
+      width: 0.5,
+      height: 5,
+      material: { color: '#ffff00' },
+    }),
+  ],
+});
+// var somco_renderer = new SimpleRenderer({
+//   symbol: new SimpleLineSymbol({
+//     color: '#ffff00',
+//     width: '2px',
+//   }),
+// });
+
+var somco_renderer = new SimpleRenderer({
+  symbol: line_3d,
+});
+
+export const somco_fense_layer = new FeatureLayer({
+  portalItem: {
+    id: '5c14f6e9e59b40ef87bb4da0f611e5e5',
+    portal: {
+      url: 'https://gis.railway-sector.com/portal',
+    },
+  },
+  title: 'SOMCO Fence',
+  elevationInfo: {
+    mode: 'on-the-ground',
+  },
+  // labelingInfo: [labelChainage],
+  // minScale: 150000,
+  // maxScale: 0,
+  renderer: somco_renderer,
+  popupEnabled: false,
 });
 
 /* Chainage Layer  */
