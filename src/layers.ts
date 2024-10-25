@@ -36,6 +36,7 @@ import {
   structureStatusColorRgb,
   structureStatusField,
   structureStatusLabel,
+  valueLabelColor,
 } from './StatusUniqueValues';
 import { circle } from '@amcharts/amcharts5/.internal/core/util/Ease';
 import LineStylePattern3D from '@arcgis/core/symbols/patterns/LineStylePattern3D';
@@ -1336,6 +1337,47 @@ const pierAccessDateColor = {
 };
 
 //const cutOffDateAccess = '01/01/1970';
+// 1. Default access label without dates
+// default label without access dates
+const defaultPierAccessLabel = new LabelClass({
+  symbol: new LabelSymbol3D({
+    symbolLayers: [
+      new TextSymbol3DLayer({
+        material: {
+          color: valueLabelColor,
+        },
+        size: 15,
+        font: {
+          family: 'Ubuntu Mono',
+          weight: 'bold',
+        },
+      }),
+    ],
+    verticalOffset: {
+      screenLength: 80,
+      maxWorldLength: 500,
+      minWorldLength: 30,
+    },
+    callout: {
+      type: 'line',
+      size: 0.5,
+      color: [0, 0, 0],
+      border: {
+        color: [255, 255, 255, 0.7],
+      },
+    },
+  }),
+  labelExpressionInfo: {
+    expression: '$feature.PIER',
+    //'DefaultValue($feature.GeoTechName, "no data")'
+    //"IIF($feature.Score >= 13, '', '')"
+    //value: "{Type}"
+  },
+  labelPlacement: 'above-center',
+  // where: 'AccessDate IS NULL',
+});
+
+// 2. access labels with dates
 const today = new Date();
 const todayn = today.getTime();
 const cutOffDateAccess = todayn;
@@ -1465,8 +1507,8 @@ export const pierAccessLayer = new FeatureLayer(
       },
     },
     layerId: 3,
-    labelingInfo: [pierAccessReadyDateLabel, pierAccessNotYetLabel, pierAccessDateMissingLabel], //[pierAccessDateMissingLabel, pierAccessReadyDateLabel, pierAccessNotYetLabel],
-    title: 'Pier with Access Date',
+    labelingInfo: [defaultPierAccessLabel], // [pierAccessReadyDateLabel, pierAccessNotYetLabel, pierAccessDateMissingLabel], //[pierAccessDateMissingLabel, pierAccessReadyDateLabel, pierAccessNotYetLabel],
+    title: 'Pier Number', //'Pier with Access Date',
     minScale: 150000,
     maxScale: 0,
 
@@ -1521,7 +1563,7 @@ const pierAccessRenderer = new UniqueValueRenderer({
     },
   ],
 });
-pierAccessLayer.renderer = pierAccessRenderer;
+// pierAccessLayer.renderer = pierAccessRenderer;
 
 // 3. Popup Template
 function dateFormat(inputDate: any, format: any) {
@@ -1584,4 +1626,4 @@ const template = new PopupTemplate({
   lastEditInfoEnabled: false,
   content: [customContent],
 });
-pierAccessLayer.popupTemplate = template;
+// pierAccessLayer.popupTemplate = template;
