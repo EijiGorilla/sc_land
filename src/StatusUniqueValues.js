@@ -1,5 +1,13 @@
-// Lot Status
+// Lot fields definitions
+export const lotIdField = 'LotID';
+export const lotPriorityField = 'Priority1_1';
 export const lotStatusField = 'StatusLA';
+export const municipalityField = 'Municipality';
+export const barangayField = 'Barangay';
+export const lotHandedOverField = 'HandedOver';
+
+// Lot Status
+
 export const lotStatusLabel = [
   'Paid',
   'For Payment Processing',

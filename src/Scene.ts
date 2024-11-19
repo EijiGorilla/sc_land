@@ -32,6 +32,7 @@ import {
   ngcp_working_area6,
   tunnelAffectedLotLayer,
   somco_fense_layer,
+  cp_break_lines,
 } from './layers';
 import { highlightLot } from './Query';
 import Zoom from '@arcgis/core/widgets/Zoom';
@@ -47,7 +48,7 @@ const alignmentGroupLayer = new GroupLayer({
   title: 'Alignment',
   visible: true,
   visibilityMode: 'independent',
-  layers: [stationBoxLayer, chainageLayer, prow_tunnelLayer],
+  layers: [stationBoxLayer, chainageLayer, prow_tunnelLayer, cp_break_lines],
 }); //map.add(alignmentGroupLayer, 0);
 
 const nloLoOccupancyGroupLayer = new GroupLayer({

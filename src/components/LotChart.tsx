@@ -14,10 +14,17 @@ import {
   generateLotNumber,
   thousands_separators,
   generateHandedOver,
+  zoomToLayer,
 } from '../Query';
 import '../App.css';
+import '@esri/calcite-components/dist/components/calcite-segmented-control';
+import '@esri/calcite-components/dist/components/calcite-segmented-control-item';
 import '@esri/calcite-components/dist/components/calcite-label';
-import { CalciteLabel } from '@esri/calcite-components-react';
+import {
+  CalciteLabel,
+  CalciteSegmentedControl,
+  CalciteSegmentedControlItem,
+} from '@esri/calcite-components-react';
 import {
   lotMoaStatusQuery,
   lotStatusField,
@@ -52,6 +59,10 @@ const LotChart = ({ municipal, barangay }: any) => {
     },
   ]);
 
+  // Segmeneted control items for priority
+  const priority_items = ['None', 'Top Priority', '2nd Priority', '3rd Priority'];
+  const [prioritySelected, setPrioritySelected] = useState<any>(priority_items[0]);
+
   const chartID = 'pie-two';
 
   const [lotNumber, setLotNumber] = useState([]);
@@ -65,20 +76,38 @@ const LotChart = ({ municipal, barangay }: any) => {
   const chartID_moa = 'land-moa';
 
   // Query
+  const queryPriority = "Priority1_1 = '" + prioritySelected + "'";
   const queryMunicipality = "Municipality = '" + municipal + "'";
+  const queryPriorityMunicipality = queryPriority + ' AND ' + queryMunicipality;
   const queryBarangay = "Barangay = '" + barangay + "'";
   const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
+  const queryPriorityMunicipalBarangay = queryPriorityMunicipality + ' AND ' + queryBarangay;
+  // const queryField = lotStatusField + ' IS NOT NULL';
 
-  if (!municipal) {
-    lotLayer.definitionExpression = '1=1';
-  } else if (municipal && !barangay) {
-    lotLayer.definitionExpression = queryMunicipality;
-  } else {
-    lotLayer.definitionExpression = queryMunicipalBarangay;
+  if (prioritySelected === 'None') {
+    if (!municipal) {
+      lotLayer.definitionExpression = '1=1';
+    } else if (municipal && !barangay) {
+      lotLayer.definitionExpression = queryMunicipality;
+    } else if (municipal && barangay) {
+      lotLayer.definitionExpression = queryMunicipalBarangay;
+    }
+  } else if (prioritySelected !== 'None') {
+    if (!municipal) {
+      lotLayer.definitionExpression = queryPriority;
+    } else if (municipal && !barangay) {
+      lotLayer.definitionExpression = queryPriorityMunicipality;
+    } else if (municipal && barangay) {
+      lotLayer.definitionExpression = queryPriorityMunicipalBarangay;
+    }
   }
 
   useEffect(() => {
-    generateLotData(municipal, barangay).then((result: any) => {
+    zoomToLayer(lotLayer);
+  }, [prioritySelected]);
+
+  useEffect(() => {
+    generateLotData(prioritySelected, municipal, barangay).then((result: any) => {
       setLotData(result);
     });
 
@@ -92,10 +121,10 @@ const LotChart = ({ municipal, barangay }: any) => {
     });
 
     // Mode of Acquisition
-    generateLotMoaData(municipal, barangay).then((response: any) => {
+    generateLotMoaData(prioritySelected, municipal, barangay).then((response: any) => {
       setLotMoaData(response);
     });
-  }, [municipal, barangay]);
+  }, [prioritySelected, municipal, barangay]);
 
   // useLayoutEffect runs synchronously. If this is used with React.lazy,
   // Every time calcite action is fired, the chart is fired, too.
@@ -135,7 +164,7 @@ const LotChart = ({ municipal, barangay }: any) => {
         legendValueText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
         radius: am5.percent(45), // outer radius
         innerRadius: am5.percent(28),
-        scale: 2.2,
+        scale: 1.8,
       }),
     );
     pieSeriesRef.current = pieSeries;
@@ -144,8 +173,8 @@ const LotChart = ({ municipal, barangay }: any) => {
     // values inside a donut
     let inner_label = pieSeries.children.push(
       am5.Label.new(root, {
-        text: '[#ffffff]{valueSum}[/]\n[fontSize: 5px; #d3d3d3; verticalAlign: super]LOTS[/]',
-        fontSize: 11,
+        text: '[#ffffff]{valueSum}[/]\n[fontSize: 0.5em; #d3d3d3; verticalAlign: super]PRIVATE LOTS[/]',
+        fontSize: '1.3em',
         centerX: am5.percent(50),
         centerY: am5.percent(40),
         populateText: true,
@@ -317,212 +346,212 @@ const LotChart = ({ municipal, barangay }: any) => {
   });
 
   // Mode of Acquisition
-  useEffect(() => {
-    // Dispose previously created root element
+  // useEffect(() => {
+  //   // Dispose previously created root element
 
-    maybeDisposeRoot(chartID_moa);
+  //   maybeDisposeRoot(chartID_moa);
 
-    var root2 = am5.Root.new(chartID_moa);
-    root2.container.children.clear();
-    root2._logo?.dispose();
+  //   var root2 = am5.Root.new(chartID_moa);
+  //   root2.container.children.clear();
+  //   root2._logo?.dispose();
 
-    // Set themesf
-    // https://www.amcharts.com/docs/v5/concepts/themes/
-    root2.setThemes([am5themes_Animated.new(root2), am5themes_Responsive.new(root2)]);
+  //   // Set themesf
+  //   // https://www.amcharts.com/docs/v5/concepts/themes/
+  //   root2.setThemes([am5themes_Animated.new(root2), am5themes_Responsive.new(root2)]);
 
-    // Create chart
-    // https://www.amcharts.com/docs/v5/charts/xy-chart/
-    var chart = root2.container.children.push(
-      am5xy.XYChart.new(root2, {
-        panX: false,
-        panY: false,
-        wheelX: 'none',
-        wheelY: 'none',
-      }),
-    );
-    chartRef_moa.current = chart;
+  //   // Create chart
+  //   // https://www.amcharts.com/docs/v5/charts/xy-chart/
+  //   var chart = root2.container.children.push(
+  //     am5xy.XYChart.new(root2, {
+  //       panX: false,
+  //       panY: false,
+  //       wheelX: 'none',
+  //       wheelY: 'none',
+  //     }),
+  //   );
+  //   chartRef_moa.current = chart;
 
-    // Create axes
-    // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
-    var yRenderer = am5xy.AxisRendererY.new(root2, {
-      minGridDistance: 5,
-      strokeOpacity: 1,
-      strokeWidth: 1,
-      inversed: true,
-      stroke: am5.color('#ffffff'),
-    });
-    yRenderer.grid.template.set('location', 1);
+  //   // Create axes
+  //   // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+  //   var yRenderer = am5xy.AxisRendererY.new(root2, {
+  //     minGridDistance: 5,
+  //     strokeOpacity: 1,
+  //     strokeWidth: 1,
+  //     inversed: true,
+  //     stroke: am5.color('#ffffff'),
+  //   });
+  //   yRenderer.grid.template.set('location', 1);
 
-    var yAxis = chart.yAxes.push(
-      am5xy.CategoryAxis.new(root2, {
-        maxDeviation: 0,
-        categoryField: 'category',
-        renderer: yRenderer,
-      }),
-    );
+  //   var yAxis = chart.yAxes.push(
+  //     am5xy.CategoryAxis.new(root2, {
+  //       maxDeviation: 0,
+  //       categoryField: 'category',
+  //       renderer: yRenderer,
+  //     }),
+  //   );
 
-    // Remove grid lines
-    yAxis.get('renderer').grid.template.set('forceHidden', true);
+  //   // Remove grid lines
+  //   yAxis.get('renderer').grid.template.set('forceHidden', true);
 
-    var xAxis = chart.xAxes.push(
-      am5xy.ValueAxis.new(root2, {
-        maxDeviation: 0,
-        min: 0,
-        strictMinMax: true,
-        calculateTotals: true,
-        renderer: am5xy.AxisRendererX.new(root2, {
-          visible: true,
-          strokeOpacity: 1,
-          strokeWidth: 1,
-          stroke: am5.color('#ffffff'),
-        }),
-      }),
-    );
-    // Remove grid lines
-    xAxis.get('renderer').grid.template.set('forceHidden', true);
+  //   var xAxis = chart.xAxes.push(
+  //     am5xy.ValueAxis.new(root2, {
+  //       maxDeviation: 0,
+  //       min: 0,
+  //       strictMinMax: true,
+  //       calculateTotals: true,
+  //       renderer: am5xy.AxisRendererX.new(root2, {
+  //         visible: true,
+  //         strokeOpacity: 1,
+  //         strokeWidth: 1,
+  //         stroke: am5.color('#ffffff'),
+  //       }),
+  //     }),
+  //   );
+  //   // Remove grid lines
+  //   xAxis.get('renderer').grid.template.set('forceHidden', true);
 
-    // Label properties for yAxis (category axis)
-    yAxis.get('renderer').labels.template.setAll({
-      //oversizedBehavior: "wrap",
-      textAlign: 'center',
-      fill: am5.color('#ffffff'),
-      //maxWidth: 150,
-      fontSize: 12,
-    });
+  //   // Label properties for yAxis (category axis)
+  //   yAxis.get('renderer').labels.template.setAll({
+  //     //oversizedBehavior: "wrap",
+  //     textAlign: 'center',
+  //     fill: am5.color('#ffffff'),
+  //     //maxWidth: 150,
+  //     fontSize: 12,
+  //   });
 
-    xAxis.get('renderer').labels.template.setAll({
-      fill: am5.color('#ffffff'),
-      fontSize: 10,
-    });
+  //   xAxis.get('renderer').labels.template.setAll({
+  //     fill: am5.color('#ffffff'),
+  //     fontSize: 10,
+  //   });
 
-    // Create series
-    // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
-    var series = chart.series.push(
-      am5xy.ColumnSeries.new(root2, {
-        name: 'Series 1',
-        xAxis: xAxis,
-        yAxis: yAxis,
-        valueXField: 'value',
-        sequencedInterpolation: true,
-        categoryYField: 'category',
-      }),
-    );
-    barSeriesRef.current = series;
-    chart.series.push(series);
+  //   // Create series
+  //   // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+  //   var series = chart.series.push(
+  //     am5xy.ColumnSeries.new(root2, {
+  //       name: 'Series 1',
+  //       xAxis: xAxis,
+  //       yAxis: yAxis,
+  //       valueXField: 'value',
+  //       sequencedInterpolation: true,
+  //       categoryYField: 'category',
+  //     }),
+  //   );
+  //   barSeriesRef.current = series;
+  //   chart.series.push(series);
 
-    var columnTemplate = series.columns.template;
+  //   var columnTemplate = series.columns.template;
 
-    columnTemplate.setAll({
-      draggable: true,
-      cursorOverStyle: 'pointer',
-      tooltipText: '{value}',
-      cornerRadiusBR: 10,
-      cornerRadiusTR: 10,
-      strokeOpacity: 0,
-    });
+  //   columnTemplate.setAll({
+  //     draggable: true,
+  //     cursorOverStyle: 'pointer',
+  //     tooltipText: '{value}',
+  //     cornerRadiusBR: 10,
+  //     cornerRadiusTR: 10,
+  //     strokeOpacity: 0,
+  //   });
 
-    // Add Label bullet
-    series.bullets.push(function () {
-      return am5.Bullet.new(root2, {
-        locationY: 1,
-        sprite: am5.Label.new(root2, {
-          text: '{value}',
-          fill: root2.interfaceColors.get('alternativeText'),
-          centerY: 8,
-          centerX: am5.p50,
-          fontSize: 13,
-          populateText: true,
-        }),
-      });
-    });
+  //   // Add Label bullet
+  //   series.bullets.push(function () {
+  //     return am5.Bullet.new(root2, {
+  //       locationY: 1,
+  //       sprite: am5.Label.new(root2, {
+  //         text: '{value}',
+  //         fill: root2.interfaceColors.get('alternativeText'),
+  //         centerY: 8,
+  //         centerX: am5.p50,
+  //         fontSize: 13,
+  //         populateText: true,
+  //       }),
+  //     });
+  //   });
 
-    // Use different color by column
-    /*
-        columnTemplate.adapters.add('fill', (fill, target) => {
-          return chart.get('colors').getIndex(series.columns.indexOf(target));
-        });
-    
-        columnTemplate.adapters.add('stroke', (stroke, target) => {
-          return chart.get('colors').getIndex(series.columns.indexOf(target));
-        });
-        */
+  //   // Use different color by column
+  //   /*
+  //       columnTemplate.adapters.add('fill', (fill, target) => {
+  //         return chart.get('colors').getIndex(series.columns.indexOf(target));
+  //       });
 
-    series.columns.template.events.on('click', function (ev) {
-      const selected: any = ev.target.dataItem?.dataContext;
-      const categorySelect: string = selected.category;
-      const find = lotMoaStatusQuery.find((emp: any) => emp.category === categorySelect);
-      const statusSelect = find?.value;
+  //       columnTemplate.adapters.add('stroke', (stroke, target) => {
+  //         return chart.get('colors').getIndex(series.columns.indexOf(target));
+  //       });
+  //       */
 
-      var highlightSelect: any;
+  //   series.columns.template.events.on('click', function (ev) {
+  //     const selected: any = ev.target.dataItem?.dataContext;
+  //     const categorySelect: string = selected.category;
+  //     const find = lotMoaStatusQuery.find((emp: any) => emp.category === categorySelect);
+  //     const statusSelect = find?.value;
 
-      var query = lotLayer.createQuery();
-      view.whenLayerView(lotLayer).then(function (layerView) {
-        //CHART_ELEMENT.style.visibility = "visible";
+  //     var highlightSelect: any;
 
-        lotLayer.queryFeatures(query).then(function (results) {
-          const RESULT_LENGTH = results.features;
-          const ROW_N = RESULT_LENGTH.length;
+  //     var query = lotLayer.createQuery();
+  //     view.whenLayerView(lotLayer).then(function (layerView) {
+  //       //CHART_ELEMENT.style.visibility = "visible";
 
-          let objID = [];
-          for (var i = 0; i < ROW_N; i++) {
-            var obj = results.features[i].attributes.OBJECTID;
-            objID.push(obj);
-          }
+  //       lotLayer.queryFeatures(query).then(function (results) {
+  //         const RESULT_LENGTH = results.features;
+  //         const ROW_N = RESULT_LENGTH.length;
 
-          var queryExt = new Query({
-            objectIds: objID,
-          });
+  //         let objID = [];
+  //         for (var i = 0; i < ROW_N; i++) {
+  //           var obj = results.features[i].attributes.OBJECTID;
+  //           objID.push(obj);
+  //         }
 
-          lotLayer.queryExtent(queryExt).then(function (result) {
-            if (result.extent) {
-              view.goTo(result.extent);
-            }
-          });
+  //         var queryExt = new Query({
+  //           objectIds: objID,
+  //         });
 
-          if (highlightSelect) {
-            highlightSelect.remove();
-          }
-          highlightSelect = layerView.highlight(objID);
+  //         lotLayer.queryExtent(queryExt).then(function (result) {
+  //           if (result.extent) {
+  //             view.goTo(result.extent);
+  //           }
+  //         });
 
-          view.on('click', function () {
-            layerView.filter = new FeatureFilter({
-              where: undefined,
-            });
-            highlightSelect.remove();
-          });
-        });
-        layerView.filter = new FeatureFilter({
-          where: 'MoA = ' + statusSelect,
-        });
+  //         if (highlightSelect) {
+  //           highlightSelect.remove();
+  //         }
+  //         highlightSelect = layerView.highlight(objID);
 
-        // For initial state, we need to add this
-        view.on('click', () => {
-          layerView.filter = new FeatureFilter({
-            where: undefined,
-          });
-          highlightSelect !== undefined ? highlightSelect.remove() : console.log('');
-        });
-      }); // End of whenLayerView
-    });
+  //         view.on('click', function () {
+  //           layerView.filter = new FeatureFilter({
+  //             where: undefined,
+  //           });
+  //           highlightSelect.remove();
+  //         });
+  //       });
+  //       layerView.filter = new FeatureFilter({
+  //         where: 'MoA = ' + statusSelect,
+  //       });
 
-    yAxisRef.current = yAxis;
-    yAxis.data.setAll(lotMoaData);
-    series.data.setAll(lotMoaData);
+  //       // For initial state, we need to add this
+  //       view.on('click', () => {
+  //         layerView.filter = new FeatureFilter({
+  //           where: undefined,
+  //         });
+  //         highlightSelect !== undefined ? highlightSelect.remove() : console.log('');
+  //       });
+  //     }); // End of whenLayerView
+  //   });
 
-    // Make stuff animate on load
-    // https://www.amcharts.com/docs/v5/concepts/animations/
-    series.appear(1000);
-    chart.appear(1000, 100);
+  //   yAxisRef.current = yAxis;
+  //   yAxis.data.setAll(lotMoaData);
+  //   series.data.setAll(lotMoaData);
 
-    return () => {
-      root2.dispose();
-    };
-  }, [chartID_moa, lotMoaData]);
+  //   // Make stuff animate on load
+  //   // https://www.amcharts.com/docs/v5/concepts/animations/
+  //   series.appear(1000);
+  //   chart.appear(1000, 100);
 
-  useEffect(() => {
-    barSeriesRef.current?.data.setAll(lotMoaData);
-    yAxisRef.current?.data.setAll(lotMoaData);
-  });
+  //   return () => {
+  //     root2.dispose();
+  //   };
+  // }, [chartID_moa, lotMoaData]);
+
+  // useEffect(() => {
+  //   barSeriesRef.current?.data.setAll(lotMoaData);
+  //   yAxisRef.current?.data.setAll(lotMoaData);
+  // });
 
   return (
     <>
@@ -540,14 +569,43 @@ const LotChart = ({ municipal, barangay }: any) => {
         </b>
       </CalciteLabel>
 
+      {/* Priority tabs */}
+      {/* <CalciteSegmentedControl
+        style={{
+          marginTop: '15px',
+          marginBottom: '10px',
+          marginLeft: '5px',
+          marginRight: 'auto',
+        }}
+        scale="s"
+        onCalciteSegmentedControlChange={(event: any) =>
+          setPrioritySelected(event.target.selectedItem.id)
+        }
+      >
+        {prioritySelected &&
+          priority_items.map((priority: any, index: any) => {
+            return (
+              <CalciteSegmentedControlItem
+                {...(prioritySelected === priority ? { checked: true } : {})}
+                key={index}
+                value={priority}
+                id={priority}
+              >
+                {priority}
+              </CalciteSegmentedControlItem>
+            );
+          })}
+      </CalciteSegmentedControl> */}
+
       {/* Lot Chart */}
       <div
         id={chartID}
         style={{
-          height: '40vh',
+          height: '48vh',
           backgroundColor: 'rgb(0,0,0,0)',
           color: 'white',
-          marginBottom: '6%',
+          marginTop: '8%',
+          marginBottom: '10%',
         }}
       ></div>
 
@@ -580,8 +638,8 @@ const LotChart = ({ municipal, barangay }: any) => {
       </CalciteLabel>
 
       {/* Mode of Acquisition */}
-      <CalciteLabel>MODE OF ACQUISITION</CalciteLabel>
-      <div
+      {/* <CalciteLabel>MODE OF ACQUISITION</CalciteLabel> */}
+      {/*<div
         id={chartID_moa}
         style={{
           height: '20vh',
@@ -589,7 +647,7 @@ const LotChart = ({ municipal, barangay }: any) => {
           color: 'white',
           marginTop: '-7%',
         }}
-      ></div>
+      ></div>*/}
     </>
   );
 }; // End of lotChartgs

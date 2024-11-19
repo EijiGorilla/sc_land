@@ -55,11 +55,14 @@ export async function dateUpdate() {
   });
 }
 
-export async function generateLotData(municipal: any, barangay: any) {
+export async function generateLotData(priority: any, municipal: any, barangay: any) {
   // Query
+  const queryPriority = "Priority1_1 = '" + priority + "'";
   const queryMunicipality = "Municipality = '" + municipal + "'";
+  const queryPriorityMunicipality = queryPriority + ' AND ' + queryMunicipality;
   const queryBarangay = "Barangay = '" + barangay + "'";
   const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
+  const queryPriorityMunicipalBarangay = queryPriorityMunicipality + ' AND ' + queryBarangay;
   const queryField = lotStatusField + ' IS NOT NULL';
 
   var total_count = new StatisticDefinition({
@@ -73,10 +76,23 @@ export async function generateLotData(municipal: any, barangay: any) {
   query.outStatistics = [total_count];
   query.orderByFields = [lotStatusField];
   query.groupByFieldsForStatistics = [lotStatusField];
-  if (municipal && !barangay) {
-    query.where = queryField + ' AND ' + queryMunicipality;
-  } else if (barangay) {
-    query.where = queryField + ' AND ' + queryMunicipalBarangay;
+
+  if (priority === 'None') {
+    if (!municipal) {
+      query.where = '1=1';
+    } else if (municipal && !barangay) {
+      query.where = queryField + ' AND ' + queryMunicipality;
+    } else if (municipal && barangay) {
+      query.where = queryField + ' AND ' + queryMunicipalBarangay;
+    }
+  } else if (priority !== 'None') {
+    if (!municipal) {
+      query.where = queryField + ' AND ' + queryPriority;
+    } else if (municipal && !barangay) {
+      query.where = queryField + ' AND ' + queryPriorityMunicipality;
+    } else if (municipal && barangay) {
+      query.where = queryField + ' AND ' + queryPriorityMunicipalBarangay;
+    }
   }
 
   return lotLayer.queryFeatures(query).then((response: any) => {
@@ -162,12 +178,15 @@ export async function generateHandedOver() {
   });
 }
 
-export async function generateLotMoaData(municipal: any, barangay: any) {
+export async function generateLotMoaData(priority: any, municipal: any, barangay: any) {
   // Query
+  const queryPriority = "Priority1_1 = '" + priority + "'";
   const queryMunicipality = "Municipality = '" + municipal + "'";
+  const queryPriorityMunicipality = queryPriority + ' AND ' + queryMunicipality;
   const queryBarangay = "Barangay = '" + barangay + "'";
   const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
-  const queryField = lotMoaField + ' IS NOT NULL';
+  const queryPriorityMunicipalBarangay = queryPriorityMunicipality + ' AND ' + queryBarangay;
+  const queryField = lotStatusField + ' IS NOT NULL';
 
   var total_count = new StatisticDefinition({
     onStatisticField: lotMoaField,
@@ -181,12 +200,23 @@ export async function generateLotMoaData(municipal: any, barangay: any) {
   query.orderByFields = [lotMoaField];
   query.groupByFieldsForStatistics = [lotMoaField];
 
-  if (municipal && !barangay) {
-    query.where = queryField + ' AND ' + queryMunicipality;
-  } else if (barangay) {
-    query.where = queryField + ' AND ' + queryMunicipalBarangay;
+  if (priority === 'None') {
+    if (!municipal) {
+      query.where = '1=1';
+    } else if (municipal && !barangay) {
+      query.where = queryField + ' AND ' + queryMunicipality;
+    } else if (municipal && barangay) {
+      query.where = queryField + ' AND ' + queryMunicipalBarangay;
+    }
+  } else if (priority !== 'None') {
+    if (!municipal) {
+      query.where = queryField + ' AND ' + queryPriority;
+    } else if (municipal && !barangay) {
+      query.where = queryField + ' AND ' + queryPriorityMunicipality;
+    } else if (municipal && barangay) {
+      query.where = queryField + ' AND ' + queryPriorityMunicipalBarangay;
+    }
   }
-
   return lotLayer.queryFeatures(query).then((response: any) => {
     var stats = response.features;
     const data = stats.map((result: any, index: any) => {

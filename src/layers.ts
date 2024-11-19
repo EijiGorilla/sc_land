@@ -1627,3 +1627,32 @@ const template = new PopupTemplate({
   content: [customContent],
 });
 // pierAccessLayer.popupTemplate = template;
+
+// Contract package breaklinesd
+// var somco_renderer = new SimpleRenderer({
+//   symbol: new SimpleLineSymbol({
+//     color: '#ffff00',
+//     width: '2px',
+//   }),
+// });
+
+const cp_break_line_renderer = new SimpleRenderer({
+  symbol: new SimpleLineSymbol({
+    color: '#4ce600',
+    width: '2px',
+  }),
+});
+export const cp_break_lines = new FeatureLayer({
+  portalItem: {
+    id: '1a2be501a0f54e048a7200e482eb0dd5',
+    portal: {
+      url: 'https://gis.railway-sector.com/portal',
+    },
+  },
+  title: 'CP Break Line',
+  renderer: cp_break_line_renderer,
+  popupEnabled: false,
+  elevationInfo: {
+    mode: 'on-the-ground',
+  },
+});

@@ -56,7 +56,7 @@ export class DropDownData extends Accessor {
         // Two dropdowns (= two fields):-----------------------
       } else if (this.fieldNames[2] === undefined) {
         var query12 = this.featureLayers[0].createQuery();
-        query12.outFields = ['*'];
+        query12.outFields = [this.fieldNames[0], this.fieldNames[1]];
         query12.orderByFields = [this.fieldNames[0], this.fieldNames[1]];
         query12.groupByFieldsForStatistics = [this.fieldNames[0], this.fieldNames[1]];
 
@@ -114,9 +114,10 @@ export class DropDownData extends Accessor {
       } else {
         // 1. Pairs for 1st feature layer
         var query13 = this.featureLayers[0].createQuery();
-        query13.outFields = ['*'];
+        query13.outFields = [this.fieldNames[0], this.fieldNames[1]];
         query13.orderByFields = [this.fieldNames[0], this.fieldNames[1]];
         query13.groupByFieldsForStatistics = [this.fieldNames[0], this.fieldNames[1]];
+        query13.where = `${this.fieldNames[0]} IS NOT NULL`;
 
         const pairQ: any = this.featureLayers[0].queryFeatures(query13).then((response: any) => {
           var stats = response.features;

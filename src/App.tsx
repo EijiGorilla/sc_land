@@ -53,7 +53,6 @@ import HandedOverAreaChart from './components/HandedOverAreaChart';
 
 function App() {
   const [asOfDate, setAsOfDate] = useState<undefined | any | unknown>(null);
-
   //**** Set states */
   const mapDiv = useRef(null);
   const layerListDiv = useRef<HTMLDivElement | undefined | any>(null);
@@ -203,7 +202,7 @@ function App() {
   return (
     <div>
       <CalciteShell>
-        <CalciteTabs slot="panel-end" layout="center" scale="l" style={{ width: '25%' }}>
+        <CalciteTabs slot="panel-end" layout="center" scale="m" style={{ width: '25%' }}>
           <CalciteTabNav slot="title-group" id="thetabs">
             <CalciteTabTitle class="Land">Land</CalciteTabTitle>
             <CalciteTabTitle class="Structure">Structure</CalciteTabTitle>
