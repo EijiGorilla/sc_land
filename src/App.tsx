@@ -449,6 +449,9 @@ function App() {
                     <b>Toggle a checkbox</b> above the Land pie chart to view{' '}
                     <b>handed-over areas</b> (m2) of Contract Packages.
                   </li>
+                  <li>
+                    <b>Handed-Over</b> represents both public and privalte lands.
+                  </li>
                 </ul>
               </div>
             ) : (

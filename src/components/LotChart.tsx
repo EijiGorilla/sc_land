@@ -15,15 +15,19 @@ import {
   thousands_separators,
   generateHandedOver,
   zoomToLayer,
+  highlightHandedOverLot,
+  highlightRemove,
 } from '../Query';
 import '../App.css';
 import '@esri/calcite-components/dist/components/calcite-segmented-control';
 import '@esri/calcite-components/dist/components/calcite-segmented-control-item';
 import '@esri/calcite-components/dist/components/calcite-label';
+import '@esri/calcite-components/dist/components/calcite-checkbox';
 import {
   CalciteLabel,
   CalciteSegmentedControl,
   CalciteSegmentedControlItem,
+  CalciteCheckbox,
 } from '@esri/calcite-components-react';
 import {
   lotMoaStatusQuery,
@@ -68,6 +72,9 @@ const LotChart = ({ municipal, barangay }: any) => {
   const [lotNumber, setLotNumber] = useState([]);
   const [handedOverNumber, setHandedOverNumber] = useState([]);
 
+  // Handed Over View checkbox
+  const [handedOverCheckBox, setHandedOverCheckBox] = useState<boolean>(false);
+
   // 2.Mode of Acquisition
   const barSeriesRef = useRef<unknown | any | undefined>({});
   const yAxisRef = useRef<unknown | any | undefined>({});
@@ -105,6 +112,14 @@ const LotChart = ({ municipal, barangay }: any) => {
   useEffect(() => {
     zoomToLayer(lotLayer);
   }, [prioritySelected]);
+
+  useEffect(() => {
+    if (handedOverCheckBox === true) {
+      highlightHandedOverLot(lotLayer);
+    } else {
+      highlightRemove(lotLayer);
+    }
+  }, [handedOverCheckBox]);
 
   useEffect(() => {
     generateLotData(prioritySelected, municipal, barangay).then((result: any) => {
@@ -610,7 +625,29 @@ const LotChart = ({ municipal, barangay }: any) => {
       ></div>
 
       {/* Handed Over */}
-      <CalciteLabel>HANDED-OVER</CalciteLabel>
+      <div style={{ display: 'flex' }}>
+        <div
+          style={{
+            color: primaryLabelColor,
+            fontSize: '1.2rem',
+            marginLeft: '13px',
+            marginBottom: '13px',
+            marginRight: '10px',
+          }}
+        >
+          HANDED-OVER
+        </div>
+
+        <CalciteCheckbox
+          name="handover-checkbox"
+          label="VIEW"
+          style={{ width: '20px' }}
+          scale="l"
+          onCalciteCheckboxChange={(event: any) =>
+            setHandedOverCheckBox(handedOverCheckBox === false ? true : false)
+          }
+        ></CalciteCheckbox>
+      </div>
       <CalciteLabel layout="inline">
         {handedOverNumber[0] === 'Infinity' ? (
           <b className="permitToEnterNumber" style={{ color: valueLabelColor }}>

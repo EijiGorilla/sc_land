@@ -21,7 +21,7 @@ import {
   pierHeadColumnLayer,
   prowLayer,
   strucOwnershipLayer,
-  handedOverLotLayer,
+  // handedOverLotLayer,
   //superUrgentLotLayer,
   ngcp_line7,
   ngcp_pole7,
@@ -62,7 +62,7 @@ const lotGroupLayer = new GroupLayer({
   title: 'Land',
   visible: true,
   visibilityMode: 'independent',
-  layers: [lotLayer, handedOverLotLayer, tunnelAffectedLotLayer, pnrLayer],
+  layers: [lotLayer, tunnelAffectedLotLayer, pnrLayer],
 });
 
 const ngcp6_groupLayer = new GroupLayer({
@@ -130,7 +130,7 @@ export const layerList = new LayerList({
     if (item.title === 'Super Urgent Lot') {
       // highlightLot(superUrgentLotLayer);
     } else if (item.title === 'Handed-Over (public + private)') {
-      highlightLot(handedOverLotLayer);
+      // highlightLot(handedOverLotLayer);
     } else if (item.title === 'Tunnel Affected') {
       highlightLot(tunnelAffectedLotLayer);
     }

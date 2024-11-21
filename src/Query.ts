@@ -19,6 +19,7 @@ import {
   structureStatusQuery,
   lotHandedOverDateField,
   lotHandedOverAreaField,
+  handedOverLotField,
 } from './StatusUniqueValues';
 
 // Updat date
@@ -598,8 +599,8 @@ export function highlightUrgent(layer: any) {
   });
 }
 
+let highlight: any;
 export function highlightLot(layer: any) {
-  let highlight: any;
   view.whenLayerView(layer).then((urgentLayerView) => {
     var query = layer.createQuery();
     layer.queryFeatures(query).then((results: any) => {
@@ -616,4 +617,30 @@ export function highlightLot(layer: any) {
       highlight = urgentLayerView.highlight(objID);
     });
   });
+}
+
+export function highlightHandedOverLot(layer: any) {
+  view.whenLayerView(layer).then((urgentLayerView) => {
+    var query = layer.createQuery();
+    query.where = `${handedOverLotField} = 1`;
+    layer.queryFeatures(query).then((results: any) => {
+      const length = results.features.length;
+      let objID = [];
+      for (var i = 0; i < length; i++) {
+        var obj = results.features[i].attributes.OBJECTID;
+        objID.push(obj);
+      }
+
+      if (highlight) {
+        highlight.remove();
+      }
+      highlight = urgentLayerView.highlight(objID);
+    });
+  });
+}
+
+export function highlightRemove(layer: any) {
+  if (highlight) {
+    highlight.remove();
+  }
 }
