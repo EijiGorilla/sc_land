@@ -676,40 +676,42 @@ export const lotLayer = new FeatureLayer({
 });
 
 /* Handed-Over Lot (public + private) */
-// const handedOverLotRenderer = new UniqueValueRenderer({
-//   field: 'HandedOver',
-//   uniqueValueInfos: [
-//     {
-//       value: 1,
-//       label: 'Handed-Over',
-//       symbol: new SimpleFillSymbol({
-//         color: [255, 0, 0, 0],
-//         outline: {
-//           color: '#00c5ff',
-//           width: 0.3,
-//         },
-//       }),
-//     },
-//   ],
-// });
+const handedOverLotRenderer = new UniqueValueRenderer({
+  field: 'HandedOver',
 
-// export const handedOverLotLayer = new FeatureLayer({
-//   portalItem: {
-//     id: '99500faf0251426ea1df934a739faa6f',
-//     portal: {
-//       url: 'https://gis.railway-sector.com/portal',
-//     },
-//   },
-//   layerId: 1,
-//   definitionExpression: 'HandedOver = 1',
-//   renderer: handedOverLotRenderer,
-//   popupEnabled: false,
-//   labelsVisible: false,
-//   title: 'Handed-Over (public + private)',
-//   elevationInfo: {
-//     mode: 'on-the-ground',
-//   },
-// });
+  uniqueValueInfos: [
+    {
+      value: 1,
+      label: 'Handed-Over',
+      symbol: new SimpleFillSymbol({
+        color: [0, 255, 255, 0.3], //[0, 255, 255, 0.1], #00ffff
+        outline: new SimpleLineSymbol({
+          color: '#00ffff',
+          width: '4px',
+        }),
+      }),
+    },
+  ],
+});
+
+export const handedOverLotLayer = new FeatureLayer({
+  portalItem: {
+    id: '99500faf0251426ea1df934a739faa6f',
+    portal: {
+      url: 'https://gis.railway-sector.com/portal',
+    },
+  },
+  layerId: 1,
+  definitionExpression: 'HandedOver = 1',
+  renderer: handedOverLotRenderer,
+  popupEnabled: false,
+  labelsVisible: false,
+  title: 'Handed-Over (public + private)',
+  elevationInfo: {
+    mode: 'on-the-ground',
+  },
+});
+handedOverLotLayer.listMode = 'hide';
 
 const tunnelAffectedLotRenderer = new UniqueValueRenderer({
   field: 'TunnelAffected',

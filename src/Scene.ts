@@ -21,7 +21,7 @@ import {
   pierHeadColumnLayer,
   prowLayer,
   strucOwnershipLayer,
-  // handedOverLotLayer,
+  handedOverLotLayer,
   //superUrgentLotLayer,
   ngcp_line7,
   ngcp_pole7,
@@ -92,6 +92,7 @@ map.add(prowLayer);
 map.add(stationLayer);
 map.add(pierHeadColumnLayer);
 map.add(somco_fense_layer);
+map.add(handedOverLotLayer);
 
 export const view = new SceneView({
   container: undefined,

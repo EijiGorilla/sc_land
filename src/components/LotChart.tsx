@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { lotLayer } from '../layers';
+import { handedOverLotLayer, lotLayer } from '../layers';
 import { view } from '../Scene';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import Query from '@arcgis/core/rest/support/Query';
@@ -94,18 +94,24 @@ const LotChart = ({ municipal, barangay }: any) => {
   if (prioritySelected === 'None') {
     if (!municipal) {
       lotLayer.definitionExpression = '1=1';
+      handedOverLotLayer.definitionExpression = '1=1';
     } else if (municipal && !barangay) {
       lotLayer.definitionExpression = queryMunicipality;
+      handedOverLotLayer.definitionExpression = queryMunicipality;
     } else if (municipal && barangay) {
       lotLayer.definitionExpression = queryMunicipalBarangay;
+      handedOverLotLayer.definitionExpression = queryMunicipalBarangay;
     }
   } else if (prioritySelected !== 'None') {
     if (!municipal) {
       lotLayer.definitionExpression = queryPriority;
+      handedOverLotLayer.definitionExpression = queryPriority;
     } else if (municipal && !barangay) {
       lotLayer.definitionExpression = queryPriorityMunicipality;
+      handedOverLotLayer.definitionExpression = queryPriorityMunicipality;
     } else if (municipal && barangay) {
       lotLayer.definitionExpression = queryPriorityMunicipalBarangay;
+      handedOverLotLayer.definitionExpression = queryPriorityMunicipalBarangay;
     }
   }
 
@@ -115,9 +121,9 @@ const LotChart = ({ municipal, barangay }: any) => {
 
   useEffect(() => {
     if (handedOverCheckBox === true) {
-      highlightHandedOverLot(lotLayer);
+      handedOverLotLayer.visible = true;
     } else {
-      highlightRemove(lotLayer);
+      handedOverLotLayer.visible = false;
     }
   }, [handedOverCheckBox]);
 
@@ -647,6 +653,7 @@ const LotChart = ({ municipal, barangay }: any) => {
             setHandedOverCheckBox(handedOverCheckBox === false ? true : false)
           }
         ></CalciteCheckbox>
+        <div style={{ color: primaryLabelColor }}>View on the map</div>
       </div>
       <CalciteLabel layout="inline">
         {handedOverNumber[0] === 'Infinity' ? (
