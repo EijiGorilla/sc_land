@@ -4,7 +4,6 @@ import { view } from '../Scene';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import Query from '@arcgis/core/rest/support/Query';
 import * as am5 from '@amcharts/amcharts5';
-import * as am5xy from '@amcharts/amcharts5/xy';
 import * as am5percent from '@amcharts/amcharts5/percent';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import am5themes_Responsive from '@amcharts/amcharts5/themes/Responsive';
@@ -30,9 +29,12 @@ import {
   CalciteCheckbox,
 } from '@esri/calcite-components-react';
 import {
+  barangayField,
   lotMoaStatusQuery,
+  lotPriorityField,
   lotStatusField,
   lotStatusQuery,
+  municipalityField,
   primaryLabelColor,
   valueLabelColor,
 } from '../StatusUniqueValues';
@@ -83,10 +85,10 @@ const LotChart = ({ municipal, barangay }: any) => {
   const chartID_moa = 'land-moa';
 
   // Query
-  const queryPriority = "Priority1_1 = '" + prioritySelected + "'";
-  const queryMunicipality = "Municipality = '" + municipal + "'";
+  const queryPriority = `${lotPriorityField} = '` + prioritySelected + "'";
+  const queryMunicipality = `${municipalityField} = '` + municipal + "'";
   const queryPriorityMunicipality = queryPriority + ' AND ' + queryMunicipality;
-  const queryBarangay = "Barangay = '" + barangay + "'";
+  const queryBarangay = `${barangayField} = '` + barangay + "'";
   const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
   const queryPriorityMunicipalBarangay = queryPriorityMunicipality + ' AND ' + queryBarangay;
   // const queryField = lotStatusField + ' IS NOT NULL';

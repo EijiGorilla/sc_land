@@ -14,6 +14,8 @@ import {
   nloStatusField,
   primaryLabelColor,
   valueLabelColor,
+  municipalityField,
+  barangayField,
 } from '../StatusUniqueValues';
 
 // Dispose function
@@ -46,8 +48,8 @@ const NloChart = memo(({ municipal, barangay }: any) => {
   const chartID = 'nlo-chart';
 
   // Query
-  const queryMunicipality = "Municipality = '" + municipal + "'";
-  const queryBarangay = "Barangay = '" + barangay + "'";
+  const queryMunicipality = `${municipalityField} = '` + municipal + "'";
+  const queryBarangay = `${barangayField} = '` + barangay + "'";
   const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
 
   if (!municipal) {

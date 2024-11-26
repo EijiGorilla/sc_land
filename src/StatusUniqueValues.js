@@ -4,7 +4,16 @@ export const lotPriorityField = 'Priority1_1';
 export const lotStatusField = 'StatusLA';
 export const municipalityField = 'Municipality';
 export const barangayField = 'Barangay';
+export const landOwnerField = 'LandOwner';
+export const cpField = 'CP';
+export const landUseField = 'LandUse';
+export const endorsedField = 'Endorsed';
 export const lotHandedOverField = 'HandedOver';
+export const lotHandedOverDateField = 'HandedOverDate';
+export const lotHandedOverAreaField = 'HandedOverArea';
+export const percentHandedOverField = 'percentHandedOver';
+export const tunnelAffectLotField = 'TunnelAffected';
+export const affectedAreaField = 'AffectedArea';
 
 // Lot Status
 
@@ -50,6 +59,9 @@ export const lotUseArray = [
   'Special Exempt',
 ];
 
+// Lot Endorsed
+export const endorsedStatus = ['Not Endorsed', 'Endorsed', 'NA'];
+
 // Lot MOA
 export const lotMoaField = 'MoA';
 export const lotMoaStatus = [
@@ -68,6 +80,7 @@ export const lotMoaStatusQuery = lotMoaStatus.map((status, index) => {
 
 // Structure
 export const structureStatusField = 'StatusStruc';
+export const structureIdField = 'StrucID';
 export const structureStatusLabel = [
   'Demolished',
   'Paid',
@@ -181,8 +194,6 @@ export const pierAccessValueDateColor = [
 
 // Handed Over Date and Handed Over Area
 export const handedOverLotField = 'HandedOver';
-export const lotHandedOverDateField = 'HandedOverDate';
-export const lotHandedOverAreaField = 'HandedOverArea';
 
 // Chart and chart label color
 export const primaryLabelColor = '#9ca3af';

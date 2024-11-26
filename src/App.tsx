@@ -50,6 +50,7 @@ import { lotLayer } from './layers';
 import LotChart from './components/LotChart';
 import { DropDownData } from './customClass';
 import HandedOverAreaChart from './components/HandedOverAreaChart';
+import { barangayField, municipalityField } from './StatusUniqueValues';
 
 function App() {
   const [asOfDate, setAsOfDate] = useState<undefined | any | unknown>(null);
@@ -89,7 +90,7 @@ function App() {
   useEffect(() => {
     const dropdownData = new DropDownData({
       featureLayers: [lotLayer],
-      fieldNames: ['Municipality', 'Barangay'],
+      fieldNames: [municipalityField, barangayField],
     });
 
     dropdownData.dropDownQuery().then((response: any) => {

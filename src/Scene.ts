@@ -37,9 +37,10 @@ import {
 import { highlightLot } from './Query';
 import Zoom from '@arcgis/core/widgets/Zoom';
 import Measurement from '@arcgis/core/widgets/Measurement';
+import { lotIdField, structureIdField } from './StatusUniqueValues';
 
 export const map = new Map({
-  basemap: 'dark-gray-vector', // "streets-night-vector", basemap
+  basemap: 'dark-gray-vector', // 'arcgis/dark-gray'
   ground: 'world-elevation',
 });
 
@@ -155,19 +156,19 @@ export const layerList = new LayerList({
 const sources = [
   {
     layer: lotLayer,
-    searchFields: ['LotID'],
-    displayField: 'LotID',
+    searchFields: [lotIdField],
+    displayField: lotIdField,
     exactMatch: false,
-    outFields: ['LotID'],
+    outFields: [lotIdField],
     name: 'Lot ID',
     placeholder: 'example: 10083',
   },
   {
     layer: structureLayer,
-    searchFields: ['StrucID'],
-    displayField: 'StrucID',
+    searchFields: [structureIdField],
+    displayField: structureIdField,
     exactMatch: false,
-    outFields: ['StrucID'],
+    outFields: [structureIdField],
     name: 'Structure ID',
     placeholder: 'example: MCRP-01-02-ML022',
   },

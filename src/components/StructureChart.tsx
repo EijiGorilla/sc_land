@@ -16,6 +16,8 @@ import {
 } from '../Query';
 import { CalciteLabel } from '@esri/calcite-components-react';
 import {
+  barangayField,
+  municipalityField,
   primaryLabelColor,
   structureMoaField,
   structureMoaQuery,
@@ -67,8 +69,8 @@ const StructureChart = memo(({ municipal, barangay }: any) => {
   const chartID_moa = 'structure-moa';
 
   // Query
-  const queryMunicipality = "Municipality = '" + municipal + "'";
-  const queryBarangay = "Barangay = '" + barangay + "'";
+  const queryMunicipality = `${municipalityField} = '` + municipal + "'";
+  const queryBarangay = `${barangayField} = '` + barangay + "'";
   const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
 
   if (!municipal) {

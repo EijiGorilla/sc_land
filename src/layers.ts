@@ -14,19 +14,28 @@ import {
   SimpleMarkerSymbol,
   LineSymbol3D,
   PathSymbol3DLayer,
-  LineSymbol3DLayer,
 } from '@arcgis/core/symbols';
 import SolidEdges3D from '@arcgis/core/symbols/edges/SolidEdges3D';
 import CustomContent from '@arcgis/core/popup/content/CustomContent';
 import PopupTemplate from '@arcgis/core/PopupTemplate';
 import {
+  barangayField,
+  cpField,
+  endorsedField,
+  endorsedStatus,
+  landOwnerField,
+  landUseField,
+  lotHandedOverDateField,
+  lotHandedOverField,
   lotStatusColor,
   lotStatusField,
   lotStatusLabel,
   lotUseArray,
+  municipalityField,
   nloStatusField,
   nloStatusLabel,
   nloStatusSymbolRef,
+  percentHandedOverField,
   structureOccupancyRef,
   structureOccupancyStatusField,
   structureOccupancyStatusLabel,
@@ -36,10 +45,9 @@ import {
   structureStatusColorRgb,
   structureStatusField,
   structureStatusLabel,
+  tunnelAffectLotField,
   valueLabelColor,
 } from './StatusUniqueValues';
-import { circle } from '@amcharts/amcharts5/.internal/core/util/Ease';
-import LineStylePattern3D from '@arcgis/core/symbols/patterns/LineStylePattern3D';
 /* Standalone table for Dates */
 export const dateTable = new FeatureLayer({
   portalItem: {
@@ -602,21 +610,19 @@ let lotLayerRenderer = new UniqueValueRenderer({
 });
 
 // Custom popup for lot layer
-const endorsedStatus = ['Not Endorsed', 'Endorsed', 'NA'];
-
 let customContentLot = new CustomContent({
   outFields: ['*'],
   creator: (event: any) => {
     // Extract AsscessDate of clicked pierAccessLayer
-    const handedOverDate = event.graphic.attributes.HandedOverDate;
-    const handOverArea = event.graphic.attributes.percentHandedOver;
-    const statusLot = event.graphic.attributes.StatusLA;
-    const landUse = event.graphic.attributes.LandUse;
-    const municipal = event.graphic.attributes.Municipality;
-    const barangay = event.graphic.attributes.Barangay;
-    const landOwner = event.graphic.attributes.LandOwner;
-    const cpNo = event.graphic.attributes.CP;
-    const endorse = event.graphic.attributes.Endorsed;
+    const handedOverDate = event.graphic.attributes[lotHandedOverDateField];
+    const handOverArea = event.graphic.attributes[percentHandedOverField];
+    const statusLot = event.graphic.attributes[lotStatusField];
+    const landUse = event.graphic.attributes[landUseField];
+    const municipal = event.graphic.attributes[municipalityField];
+    const barangay = event.graphic.attributes[barangayField];
+    const landOwner = event.graphic.attributes[landOwnerField];
+    const cpNo = event.graphic.attributes[cpField];
+    const endorse = event.graphic.attributes[endorsedField];
     const endorsed = endorsedStatus[endorse];
 
     let daten: any;
@@ -702,7 +708,7 @@ export const handedOverLotLayer = new FeatureLayer({
     },
   },
   layerId: 1,
-  definitionExpression: 'HandedOver = 1',
+  definitionExpression: `${lotHandedOverField} = 1`,
   renderer: handedOverLotRenderer,
   popupEnabled: false,
   labelsVisible: false,
@@ -714,7 +720,7 @@ export const handedOverLotLayer = new FeatureLayer({
 handedOverLotLayer.listMode = 'hide';
 
 const tunnelAffectedLotRenderer = new UniqueValueRenderer({
-  field: 'TunnelAffected',
+  field: tunnelAffectLotField,
   uniqueValueInfos: [
     {
       value: 1,
@@ -738,7 +744,7 @@ export const tunnelAffectedLotLayer = new FeatureLayer({
     },
   },
   layerId: 1,
-  definitionExpression: 'TunnelAffected = 1',
+  definitionExpression: `${tunnelAffectLotField} = 1`,
   renderer: tunnelAffectedLotRenderer,
   popupEnabled: false,
   labelsVisible: false,
