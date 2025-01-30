@@ -1,4 +1,4 @@
-import { dateTable, lotLayer, nloLayer, structureLayer } from './layers';
+import { dateTable, lotLayer, nloLayer, pierAccessLayer, structureLayer } from './layers';
 import StatisticDefinition from '@arcgis/core/rest/support/StatisticDefinition';
 import * as am5 from '@amcharts/amcharts5';
 import { view } from './Scene';
@@ -27,7 +27,21 @@ import {
   lotHandedOverField,
   affectedAreaField,
   cpField,
+  lotTargetActualDateField,
+  pierAccessBatchField,
+  pierAccessStatusField,
 } from './StatusUniqueValues';
+
+// get last date of month
+export function lastDateOfMonth(date: Date) {
+  const old_date = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  const year = old_date.getFullYear();
+  const month = old_date.getMonth() + 1;
+  const day = old_date.getDate();
+  const final_date = `${year}-${month}-${day}`;
+
+  return final_date;
+}
 
 // Updat date
 export async function dateUpdate() {
@@ -249,48 +263,125 @@ export async function generateLotMoaData(priority: any, municipal: any, barangay
 
 // For monthly progress chart of lot
 export async function generateLotProgress(municipality: any, barangay: any) {
-  var total_count_lot = new StatisticDefinition({
-    onStatisticField: lotHandedOverDateField,
-    outStatisticFieldName: 'total_count_lot',
-    statisticType: 'count',
+  var total_target = new StatisticDefinition({
+    onStatisticField: 'CASE WHEN TargetActual = 1 THEN 1 ELSE 0 END',
+    outStatisticFieldName: 'total_target',
+    statisticType: 'sum',
   });
 
-  var query = lotLayer.createQuery();
-  query.outStatistics = [total_count_lot];
-  // eslint-disable-next-line no-useless-concat
-  const municipal = municipality;
-  const barang = barangay;
-  const queryMunicipality = `${municipalityField} = '` + municipal + "'";
-  const queryBarangay = `${barangayField} = '` + barang + "'";
-  const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
-  const queryHandedOverDate = lotHandedOverDateField + ' IS NOT NULL';
+  var total_actual = new StatisticDefinition({
+    // means handed over
+    onStatisticField: 'CASE WHEN TargetActual = 2 THEN 1 ELSE 0 END',
+    outStatisticFieldName: 'total_actual',
+    statisticType: 'sum',
+  });
 
-  if (municipal && barang) {
-    query.where = queryHandedOverDate + ' AND ' + queryMunicipalBarangay;
-  } else if (municipal && !barang) {
-    query.where = queryHandedOverDate + ' AND ' + queryMunicipality;
+  const query = lotLayer.createQuery();
+
+  query.outStatistics = [total_target, total_actual];
+  // eslint-disable-next-line no-useless-concat
+  const queryMunicipality = `${municipalityField} = '` + municipality + "'";
+  const queryBarangay = `${barangayField} = '` + barangay + "'";
+  const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
+  const queryHandedOverHandOverDate = lotTargetActualDateField + ' IS NOT NULL';
+
+  if (municipality && barangay) {
+    query.where = queryHandedOverHandOverDate + ' AND ' + queryMunicipalBarangay;
+  } else if (municipality && !barangay) {
+    query.where = queryHandedOverHandOverDate + ' AND ' + queryMunicipality;
   } else {
-    query.where = queryHandedOverDate;
+    query.where = queryHandedOverHandOverDate;
   }
 
-  query.outFields = [lotHandedOverDateField];
-  query.orderByFields = [lotHandedOverDateField];
-  query.groupByFieldsForStatistics = [lotHandedOverDateField];
+  query.outFields = [lotTargetActualDateField];
+  query.orderByFields = [lotTargetActualDateField];
+  query.groupByFieldsForStatistics = [lotTargetActualDateField];
 
   return lotLayer.queryFeatures(query).then((response: any) => {
     var stats = response.features;
+
     const data = stats.map((result: any, index: any) => {
       const attributes = result.attributes;
-      const date = attributes.HandedOverDate;
-      const total_handedover = attributes.total_count_lot;
+      const date = attributes[lotTargetActualDateField];
+      const targetCount = attributes.total_target;
+      const actualCount = attributes.total_actual;
+      return Object.assign({
+        date,
+        target: targetCount,
+        actual: actualCount,
+      });
+    });
+    var sum_target: any = 0;
+    var sum_actual: any = 0;
+
+    const data2 = data.map((result: any, index: any) => {
+      const date = result.date;
+      const v_target = result.target;
+      const v_actual = result.actual;
+      sum_target += v_target;
+      sum_actual += v_actual;
+      return Object.assign({
+        date,
+        target: sum_target,
+        actual: sum_actual,
+      });
+    });
+    return data2;
+  });
+}
+
+export async function pierBatchProgressChartData(municipality: any, barangay: any) {
+  var total_accessible = new StatisticDefinition({
+    onStatisticField: 'CASE WHEN AccessStatus = 1 THEN 1 ELSE 0 END',
+    outStatisticFieldName: 'total_accessible',
+    statisticType: 'sum',
+  });
+
+  var total_inaccessible = new StatisticDefinition({
+    // means handed over
+    onStatisticField: 'CASE WHEN AccessStatus = 0 THEN 1 ELSE 0 END',
+    outStatisticFieldName: 'total_inaccessible',
+    statisticType: 'sum',
+  });
+
+  var query = lotLayer.createQuery();
+  query.outStatistics = [total_accessible, total_inaccessible];
+  // eslint-disable-next-line no-useless-concat
+  const queryMunicipality = `${municipalityField} = '` + municipality + "'";
+  const queryBarangay = `${barangayField} = '` + barangay + "'";
+  const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
+  const queryAccessStatus = pierAccessStatusField + ' IS NOT NULL';
+
+  if (municipality && barangay) {
+    query.where = queryAccessStatus + ' AND ' + queryMunicipalBarangay;
+  } else if (municipality && !barangay) {
+    query.where = queryAccessStatus + ' AND ' + queryMunicipality;
+  } else {
+    query.where = queryAccessStatus;
+  }
+
+  query.outFields = [pierAccessBatchField, pierAccessStatusField];
+  query.orderByFields = [pierAccessBatchField];
+  query.groupByFieldsForStatistics = [pierAccessBatchField];
+
+  return pierAccessLayer.queryFeatures(query).then((response: any) => {
+    var stats = response.features;
+    const data = stats.map((result: any, index: any) => {
+      const attributes = result.attributes;
+      const batch = attributes[pierAccessBatchField];
+      const batch_name =
+        batch === 1 ? 'Batch 1' : batch === 2 ? 'Batch 2' : batch === 3 ? 'Batch 3' : 'Batch 4';
+
+      const total_access = attributes.total_accessible;
+      const total_inaccess = attributes.total_inaccessible;
 
       // compile in object array
       return Object.assign({
-        date: date,
-        value: total_handedover,
+        batch: batch_name,
+        accessible: total_access,
+        inaccessible: total_inaccess,
       });
     });
-
     return data;
   });
 }

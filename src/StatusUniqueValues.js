@@ -1,4 +1,8 @@
 // Lot fields definitions
+export const lotHandOverDateField = 'HandOverDate';
+export const lotTargetActualField = 'TargetActual';
+export const lotTargetActualDateField = 'TargetActualDate';
+
 export const lotIdField = 'LotID';
 export const lotPriorityField = 'Priority1_1';
 export const lotStatusField = 'StatusLA';
@@ -191,6 +195,9 @@ export const pierAccessValueDateColor = [
   [0, 255, 0, 0.9], // Accessible
   [255, 255, 255, 0.9], // Dates are missing
 ];
+
+export const pierAccessStatusField = 'AccessStatus';
+export const pierAccessBatchField = 'BatchNo';
 
 // Handed Over Date and Handed Over Area
 export const handedOverLotField = 'HandedOver';

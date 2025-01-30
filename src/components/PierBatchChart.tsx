@@ -3,16 +3,13 @@ import * as am5 from '@amcharts/amcharts5';
 import * as am5xy from '@amcharts/amcharts5/xy';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import am5themes_Responsive from '@amcharts/amcharts5/themes/Responsive';
-import { dateFormat, generateLotProgress, lastDateOfMonth } from '../Query';
-import { lotLayer } from '../layers';
+
+import { pierAccessLayer } from '../layers';
 import { view } from '../Scene';
-import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import Query from '@arcgis/core/rest/support/Query';
-import {
-  lotHandedOverDateField,
-  lotHandOverDateField,
-  lotTargetActualField,
-} from '../StatusUniqueValues';
+import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
+import { pierAccessBatchField, pierAccessStatusField } from '../StatusUniqueValues';
+import { pierBatchProgressChartData } from '../Query';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -22,18 +19,20 @@ function maybeDisposeRoot(divId: any) {
     }
   });
 }
-
-const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
+const PierBatchChart = ({ municipal, barangay }: any) => {
   const legendRef = useRef<unknown | any | undefined>({});
   const xAxisRef = useRef<unknown | any | undefined>({});
   const yAxisRef = useRef<unknown | any | undefined>({});
   const chartRef = useRef<unknown | any | undefined>({});
-  const [lotProgressData, setLotProgressData] = useState([]);
+  const [pierBatchProgressData, setPierBatchProgressData] = useState([]);
 
-  const chartID = 'lot-progress';
+  const chartID = 'pier-batch-progress';
   useEffect(() => {
-    generateLotProgress(municipal, barangay).then((result: any) => {
-      setLotProgressData(result);
+    // generateLotProgress(municipal, barangay).then((result: any) => {
+    //   setLotProgressData(result);
+    // });
+    pierBatchProgressChartData(municipal, barangay).then((result: any) => {
+      setPierBatchProgressData(result);
     });
   }, [municipal, barangay]);
 
@@ -64,7 +63,7 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
     // Chart title
     chart.children.unshift(
       am5.Label.new(root, {
-        text: 'Monthly Progress & Target Schedule of Handed Over Lots',
+        text: 'Progress on Accessible Pier Locations',
         fontSize: 14,
         fontWeight: 'bold',
         textAlign: 'center',
@@ -72,42 +71,47 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
         x: am5.percent(50),
         centerX: am5.percent(50),
         paddingTop: 0,
-        marginBottom: 10,
+        paddingBottom: 10,
       }),
     );
 
     // Add cursor
     // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
+
     var cursor = chart.set(
       'cursor',
       am5xy.XYCursor.new(root, {
         behavior: 'zoomX',
       }),
     );
-    cursor.lineY.set('visible', false);
+    cursor.lineX.set('visible', false);
 
     // Create axes
-    var xRenderer = am5xy.AxisRendererX.new(root, {
-      //minGridDistance: 60,
-      strokeOpacity: 1,
-      strokeWidth: 1,
-      stroke: am5.color('#ffffff'),
-    });
-
     var xAxis = chart.xAxes.push(
-      am5xy.DateAxis.new(root, {
-        maxDeviation: 0,
-        groupData: true,
-        baseInterval: {
-          timeUnit: 'day',
-          count: 1,
-        },
-        groupIntervals: [{ timeUnit: 'month', count: 1 }],
-        renderer: xRenderer,
-        tooltip: am5.Tooltip.new(root, {}),
+      am5xy.ValueAxis.new(root, {
+        min: 0,
+        maxPrecision: 0,
+        renderer: am5xy.AxisRendererX.new(root, {
+          strokeOpacity: 1,
+          strokeWidth: 1,
+          stroke: am5.color('#ffffff'),
+        }),
       }),
     );
 
+    var yAxis = chart.yAxes.push(
+      am5xy.CategoryAxis.new(root, {
+        categoryField: 'batch',
+        tooltip: am5.Tooltip.new(root, {}),
+        renderer: am5xy.AxisRendererY.new(root, {
+          minGridDistance: 60,
+          strokeOpacity: 1,
+          strokeWidth: 1.5,
+          stroke: am5.color('#ffffff'),
+        }),
+      }),
+    );
+    yAxis.data.setAll(pierBatchProgressData);
     xAxis.get('renderer').labels.template.setAll({
       //oversizedBehavior: "wrap",
       textAlign: 'center',
@@ -115,21 +119,6 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
       //maxWidth: 150,
       fontSize: 12,
     });
-
-    var yAxis = chart.yAxes.push(
-      am5xy.ValueAxis.new(root, {
-        calculateTotals: true,
-        min: 0,
-        max: 100,
-        numberFormat: "#'%'",
-        renderer: am5xy.AxisRendererY.new(root, {
-          minGridDistance: 60,
-          strokeOpacity: 1,
-          strokeWidth: 1,
-          stroke: am5.color('#ffffff'),
-        }),
-      }),
-    );
 
     yAxis.get('renderer').labels.template.setAll({
       //oversizedBehavior: "wrap",//
@@ -142,16 +131,16 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
     yAxisRef.current = yAxis;
 
     // Add yaxix title
-    yAxis.children.unshift(
-      am5.Label.new(root, {
-        rotation: -90,
-        // text: 'No. of handed-over lots',
-        y: am5.p50,
-        centerX: am5.p50,
-        fill: am5.color('#ffffff'),
-        fontSize: 11,
-      }),
-    );
+    // yAxis.children.unshift(
+    //   am5.Label.new(root, {
+    //     rotation: -90,
+    //     // text: 'No. of casted components',
+    //     y: am5.p50,
+    //     centerX: am5.p50,
+    //     fill: am5.color('#ffffff'),
+    //     fontSize: 11,
+    //   }),
+    // );
 
     // Add legend
     // https://www.amcharts.com/docs/v5/charts/xy-chart/legend-xy-series/
@@ -176,6 +165,13 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
       //fontWeight: "300"
     });
 
+    // check this;
+    // newDataItem = new DataItem(series, dataContext, series._makeDataItem(dataContext));
+    // dataItem is of dataItems
+    // dataContext: dataItem.dataContext
+
+    // Add series
+    // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
     function makeSeries(name: any, fieldName: any, color: any) {
       var series = chart.series.push(
         am5xy.ColumnSeries.new(root, {
@@ -183,45 +179,48 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
           stacked: true,
           xAxis: xAxis,
           yAxis: yAxis,
-          valueYField: fieldName,
-          valueXField: 'date',
+          baseAxis: yAxis,
+          valueXField: fieldName,
+          categoryYField: 'batch',
           fill: color,
           stroke: color,
           // valueYGrouped: 'sum',
         }),
       );
+
+      // select chart series and filter
       var highlightSelect: any;
       series.columns.template.events.on('click', (ev) => {
-        const select: any = ev.target.dataItem?.dataContext;
-        const raw_date = new Date(select?.date);
-        const last_date = lastDateOfMonth(new Date(raw_date));
-        const qDate =
-          fieldName === 'target'
-            ? `${lotHandOverDateField} <= date'` + last_date + "'"
-            : `${lotHandedOverDateField} <= date'` + last_date + "'";
+        const selected: any = ev.target.dataItem?.dataContext;
+        const selectedBatchName = selected.batch;
+        const selectedBatch =
+          selectedBatchName === 'Batch 1'
+            ? 1
+            : selectedBatchName === 'Batch 2'
+              ? 2
+              : selectedBatchName === 'Batch 3'
+                ? 3
+                : 4;
 
+        // const qExpression =
         const qMunicipality = "Municipality = '" + municipal + "'";
         const qBarangay = "Barangay = '" + barangay + "'";
         const qMunicipalBarangay = qMunicipality + ' AND ' + qBarangay;
-        const status = fieldName === 'target' ? 1 : 2;
-        const qSelected = `${lotTargetActualField} = ` + status;
+        const status = fieldName === 'accessible' ? 1 : 0;
+        const qSelectedStatus = `${pierAccessStatusField} = ` + status;
+        const qSelectedBatch = `${pierAccessBatchField} = ` + selectedBatch;
 
-        let layerViewFilter: any;
-
-        var query = lotLayer.createQuery();
+        var query = pierAccessLayer.createQuery();
         if (municipal && barangay) {
-          query.where = qMunicipalBarangay + ' AND ' + qSelected + ' AND ' + qDate;
-          layerViewFilter = qMunicipalBarangay + ' AND ' + qSelected + ' AND ' + qDate;
+          query.where = qSelectedStatus + ' AND ' + qMunicipalBarangay + ' AND ' + qSelectedBatch;
         } else if (municipal && !barangay) {
-          query.where = qMunicipality + ' AND ' + qSelected + ' AND ' + qDate;
-          layerViewFilter = qMunicipality + ' AND ' + qSelected + ' AND ' + qDate;
+          query.where = qSelectedStatus + ' AND ' + qMunicipality + ' AND ' + qSelectedBatch;
         } else {
-          query.where = qSelected + ' AND ' + qDate;
-          layerViewFilter = qSelected + ' AND ' + qDate;
+          query.where = qSelectedStatus;
         }
 
-        view.whenLayerView(lotLayer).then((layerView: any) => {
-          lotLayer.queryFeatures(query).then((results: any) => {
+        view.whenLayerView(pierAccessLayer).then((layerView: any) => {
+          pierAccessLayer.queryFeatures(query).then((results: any) => {
             const RESULT_LENGTH = results.features;
             const ROW_N = RESULT_LENGTH.length;
 
@@ -235,7 +234,7 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
               objectIds: objID,
             });
 
-            lotLayer.queryExtent(queryExt).then(function (result) {
+            pierAccessLayer.queryExtent(queryExt).then(function (result) {
               if (result.extent) {
                 view.goTo(result.extent);
               }
@@ -257,17 +256,19 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
       });
 
       series.columns.template.setAll({
-        tooltipText: '{name}: {valueY} ({valueYTotalPercent.formatNumber("#.#")}%)',
+        tooltipText: '{name}: {valueX}',
         tooltipY: am5.percent(10),
       });
-      series.data.setAll(lotProgressData);
+      series.data.setAll(pierBatchProgressData);
 
+      // Make stuff animate on load
+      // https://www.amcharts.com/docs/v5/concepts/animations/
       series.appear();
 
       series.bullets.push(function () {
         return am5.Bullet.new(root, {
           sprite: am5.Label.new(root, {
-            text: '{valueY}',
+            text: '{valueX}',
             fill: root.interfaceColors.get('alternativeText'),
             centerY: am5.p50,
             centerX: am5.p50,
@@ -279,38 +280,34 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
       legend.data.push(series);
     }
 
-    makeSeries('Actual', 'actual', am5.color('#0096FF'));
-    makeSeries('Target', 'target', am5.color('#FF5733'));
+    makeSeries('Accessible', 'accessible', am5.color('#0096FF'));
+    makeSeries('Not Accessible', 'inaccessible', am5.color('#FF5733'));
 
     chart.appear(1000, 100);
 
     return () => {
       root.dispose();
     };
-  }, [chartID, lotProgressData]);
+  }, [chartID, pierBatchProgressData]);
 
   return (
     <>
-      {nextwidget === 'charts' ? (
-        <div
-          id={chartID}
-          style={{
-            height: '40vh',
-            width: '70%',
-            backgroundColor: '#2b2b2b',
-            color: 'white',
-            position: 'absolute',
-            zIndex: 99,
-            bottom: 10,
-            marginLeft: '1vw',
-            marginRight: 'auto',
-          }}
-        ></div>
-      ) : (
-        <div id={chartID} hidden></div>
-      )}
+      <div
+        id={chartID}
+        style={{
+          height: '44vh',
+          width: '70%',
+          backgroundColor: '#2b2b2b',
+          color: 'white',
+          position: 'fixed',
+          zIndex: 10,
+          bottom: 0,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }}
+      ></div>
     </>
   );
 };
 
-export default LotProgressChart;
+export default PierBatchChart;
