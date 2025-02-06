@@ -13,6 +13,7 @@ import {
   lotHandOverDateField,
   lotTargetActualField,
 } from '../StatusUniqueValues';
+import { useDropdownContext } from './DropdownContext';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -23,7 +24,12 @@ function maybeDisposeRoot(divId: any) {
   });
 }
 
-const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
+const LotProgressChart = () => {
+  const { municipality, barangays } = useDropdownContext();
+
+  const municipal = municipality === null ? undefined : municipality.field1;
+  const barangay = barangays === null ? undefined : barangays.name;
+
   const legendRef = useRef<unknown | any | undefined>({});
   const xAxisRef = useRef<unknown | any | undefined>({});
   const yAxisRef = useRef<unknown | any | undefined>({});
@@ -60,6 +66,22 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
       }),
     );
     chartRef.current = chart;
+
+    let scrollbarY1 = am5xy.XYChartScrollbar.new(root, {
+      orientation: 'vertical',
+      // height: 50,
+      // width: 1,
+    });
+
+    scrollbarY1.startGrip.set('scale', 0.7);
+    scrollbarY1.endGrip.set('scale', 0.7);
+
+    chart.set('scrollbarY', scrollbarY1);
+    let scrollbarY2 = chart.get('scrollbarY');
+    scrollbarY2?.get('background')?.setAll({
+      fill: am5.color('#ffffff'),
+      fillOpacity: 0.2,
+    });
 
     // Chart title
     chart.children.unshift(
@@ -118,10 +140,11 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
 
     var yAxis = chart.yAxes.push(
       am5xy.ValueAxis.new(root, {
-        calculateTotals: true,
+        // calculateTotals: true,
         min: 0,
-        max: 100,
-        numberFormat: "#'%'",
+        // max: 100,
+        // numberFormat: "#'%'",
+        strictMinMax: true,
         renderer: am5xy.AxisRendererY.new(root, {
           minGridDistance: 60,
           strokeOpacity: 1,
@@ -184,6 +207,8 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
           xAxis: xAxis,
           yAxis: yAxis,
           valueYField: fieldName,
+          // valueYShow: 'valueYTotalPercent',
+          categoryXField: 'date',
           valueXField: 'date',
           fill: color,
           stroke: color,
@@ -291,26 +316,25 @@ const LotProgressChart = ({ municipal, barangay, nextwidget }: any) => {
 
   return (
     <>
-      {nextwidget === 'charts' ? (
-        <div
-          id={chartID}
-          style={{
-            height: '40vh',
-            width: '70%',
-            backgroundColor: '#2b2b2b',
-            color: 'white',
-            position: 'absolute',
-            zIndex: 99,
-            bottom: 10,
-            marginLeft: '1vw',
-            marginRight: 'auto',
-          }}
-        ></div>
-      ) : (
-        <div id={chartID} hidden></div>
-      )}
+      <div
+        id={chartID}
+        style={{
+          height: '40vh',
+          width: '70%',
+          backgroundColor: '#2b2b2b',
+          color: 'white',
+          position: 'absolute',
+          zIndex: 99,
+          bottom: 10,
+          marginLeft: '1vw',
+          marginRight: 'auto',
+        }}
+      ></div>
     </>
   );
 };
 
 export default LotProgressChart;
+function am5color(arg0: number) {
+  throw new Error('Function not implemented.');
+}

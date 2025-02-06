@@ -48,9 +48,12 @@ import ExpropriationList from './components/ExpropriationList';
 import loadable from '@loadable/component';
 import { lotLayer } from './layers';
 import LotChart from './components/LotChart';
-import { DropDownData } from './customClass';
 import HandedOverAreaChart from './components/HandedOverAreaChart';
-import { barangayField, municipalityField } from './StatusUniqueValues';
+import DropdownListDisplay, {
+  DropdownDataProvider,
+  useDropdownContext,
+} from './components/DropdownContext';
+
 // import PierBatchChart from './components/PierBatchChart';
 
 function App() {
@@ -68,13 +71,6 @@ function App() {
   const [activeWidget, setActiveWidget] = useState<undefined | any | unknown>(null);
   const [nextWidget, setNextWidget] = useState<undefined | any | unknown>(null);
 
-  // For dropdown filter
-  const [initMunicipalBarangay, setInitMunicipalBarangay] = useState([]);
-
-  const [municipality, setMunicipality] = useState<null | any>(null);
-  const [barangay, setBarangay] = useState<null | any>(null);
-  const [barangayList, setBarangayList] = useState([]);
-
   // loadable for code splitting
   const NloChart = loadable(() => import('./components/NloChart'));
   const StructureChart = loadable(() => import('./components/StructureChart'));
@@ -89,36 +85,10 @@ function App() {
 
   //**** Create dropdonw list */
   useEffect(() => {
-    const dropdownData = new DropDownData({
-      featureLayers: [lotLayer],
-      fieldNames: [municipalityField, barangayField],
-    });
-
-    dropdownData.dropDownQuery().then((response: any) => {
-      setInitMunicipalBarangay(response);
-    });
-
     dateUpdate().then((response: any) => {
       setAsOfDate(response);
     });
   }, []);
-
-  // Add zoomToLayer in App component, not LotChart component
-  useEffect(() => {
-    zoomToLayer(lotLayer);
-  }, [municipality, barangay]);
-
-  // handle change event of the Municipality dropdown
-  const handleMunicipalityChange = (obj: any) => {
-    setMunicipality(obj);
-    setBarangayList(obj.field2);
-    setBarangay(null);
-  };
-
-  // handle change event of the barangay dropdownff
-  const handleBarangayChange = (obj: any) => {
-    setBarangay(obj);
-  };
 
   // End of dropdown list
   useEffect(() => {
@@ -178,29 +148,6 @@ function App() {
     }
   }, []);
 
-  // Style CSS
-  const customstyles = {
-    option: (styles: any, { data, isDisabled, isFocused, isSelected }: any) => {
-      // const color = chroma(data.color);
-      return {
-        ...styles,
-        backgroundColor: isFocused ? '#999999' : isSelected ? '#2b2b2b' : '#2b2b2b',
-        color: '#ffffff',
-        // fontSize: '0.75rem',
-      };
-    },
-
-    control: (defaultStyles: any) => ({
-      ...defaultStyles,
-      backgroundColor: '#2b2b2b',
-      borderColor: '#949494',
-      color: '#ffffff',
-      touchUi: false,
-      // fontSize: '0.75rem',
-    }),
-    singleValue: (defaultStyles: any) => ({ ...defaultStyles, color: '#fff' }),
-  };
-
   return (
     <div>
       <CalciteShell>
@@ -213,37 +160,31 @@ function App() {
           </CalciteTabNav>
           {/* CalciteTab: Lot */}
           <CalciteTab>
-            {lotLayerLoaded === 'loaded' && (
-              <LotChart
-                municipal={municipality === null ? '' : municipality.field1}
-                barangay={barangay === null ? '' : barangay.name}
-              />
-            )}
+            <DropdownDataProvider>
+              {lotLayerLoaded === 'loaded' && <LotChart />}
+            </DropdownDataProvider>
           </CalciteTab>
           {/* CalciteTab: Structure */}
           <CalciteTab>
-            <StructureChart
-              municipal={municipality === null ? '' : municipality.field1}
-              barangay={barangay === null ? '' : barangay.name}
-            />
+            <DropdownDataProvider>
+              <StructureChart />
+            </DropdownDataProvider>
           </CalciteTab>
 
           {/* CalciteTab: Non-Land Owner */}
           <CalciteTab>
-            <NloChart
-              municipal={municipality === null ? '' : municipality.field1}
-              barangay={barangay === null ? '' : barangay.name}
-            />
+            <DropdownDataProvider>
+              <NloChart />
+            </DropdownDataProvider>
           </CalciteTab>
 
           {/* CalciteTab: List of Lots under Expropriation */}
           <CalciteTab>
-            <div>
-              <ExpropriationList
-                municipal={municipality === null ? '' : municipality.field1}
-                barangay={barangay === null ? '' : barangay.name}
-              />
-            </div>
+            <DropdownDataProvider>
+              <div>
+                <ExpropriationList />
+              </div>
+            </DropdownDataProvider>
           </CalciteTab>
         </CalciteTabs>
 
@@ -271,45 +212,7 @@ function App() {
           <div className="date">{!asOfDate ? '' : 'As of ' + asOfDate}</div>
 
           {/* Dropdown List */}
-          <div className="dropdownFilterLayout">
-            <div
-              style={{
-                color: 'white',
-                fontSize: '0.85rem',
-                margin: 'auto',
-                paddingRight: '0.5rem',
-              }}
-            >
-              Municipality
-            </div>
-            <Select
-              placeholder="Select Municipality"
-              value={municipality}
-              options={initMunicipalBarangay}
-              onChange={handleMunicipalityChange}
-              getOptionLabel={(x: any) => x.field1}
-              styles={customstyles}
-            />
-            <br />
-            <div
-              style={{
-                color: 'white',
-                fontSize: '0.85rem',
-                margin: 'auto',
-                paddingRight: '0.5rem',
-              }}
-            >
-              Barangay
-            </div>
-            <Select
-              placeholder="Select Barangay"
-              value={barangay}
-              options={barangayList}
-              onChange={handleBarangayChange}
-              getOptionLabel={(x: any) => x.name}
-              styles={customstyles}
-            />
-          </div>
+          <DropdownListDisplay />
 
           <img
             src="https://EijiGorilla.github.io/Symbols/Projec_Logo/GCR LOGO.png"
@@ -513,13 +416,11 @@ function App() {
         </div>
 
         {/* Lot progress chart is loaded ONLY when charts widget is clicked. */}
-        {nextWidget === 'charts' && nextWidget !== activeWidget && lotLayerLoaded === 'loaded' && (
-          <LotProgressChart
-            municipal={municipality === null ? '' : municipality.field1}
-            barangay={barangay === null ? '' : barangay.name}
-            nextwidget={nextWidget === activeWidget ? null : nextWidget}
-          />
-        )}
+        <DropdownDataProvider>
+          {nextWidget === 'charts' &&
+            nextWidget !== activeWidget &&
+            lotLayerLoaded === 'loaded' && <LotProgressChart />}
+        </DropdownDataProvider>
 
         {/* Handed-Over Area Graph */}
         {nextWidget === 'handedover-charts' && nextWidget !== activeWidget && (

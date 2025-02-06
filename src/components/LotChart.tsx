@@ -38,6 +38,7 @@ import {
   primaryLabelColor,
   valueLabelColor,
 } from '../StatusUniqueValues';
+import { useDropdownContext } from './DropdownContext';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -50,7 +51,17 @@ function maybeDisposeRoot(divId: any) {
 
 ///*** Others */
 /// Draw chart
-const LotChart = ({ municipal, barangay }: any) => {
+const LotChart = () => {
+  const { municipality, barangays } = useDropdownContext();
+
+  const municipal = municipality === null ? undefined : municipality.field1;
+  const barangay = barangays === null ? undefined : barangays.name;
+
+  // Add zoomToLayer in App component, not LotChart component
+  useEffect(() => {
+    zoomToLayer(lotLayer);
+  }, [municipal, barangay]);
+
   // 1. Land Acquisition
   const pieSeriesRef = useRef<unknown | any | undefined>({});
   const legendRef = useRef<unknown | any | undefined>({});

@@ -25,6 +25,7 @@ import {
   structureStatusQuery,
   valueLabelColor,
 } from '../StatusUniqueValues';
+import { useDropdownContext } from './DropdownContext';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -38,7 +39,12 @@ function maybeDisposeRoot(divId: any) {
 ///*** Others */
 
 /// Draw chart
-const StructureChart = memo(({ municipal, barangay }: any) => {
+const StructureChart = memo(() => {
+  const { municipality, barangays } = useDropdownContext();
+
+  const municipal = municipality === null ? undefined : municipality.field1;
+  const barangay = barangays === null ? undefined : barangays.name;
+
   // 1. Structure
   const pieSeriesRef = useRef<unknown | any | undefined>({});
   const legendRef = useRef<unknown | any | undefined>({});

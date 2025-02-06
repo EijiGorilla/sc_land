@@ -17,6 +17,7 @@ import {
   municipalityField,
   barangayField,
 } from '../StatusUniqueValues';
+import { useDropdownContext } from './DropdownContext';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -30,7 +31,12 @@ function maybeDisposeRoot(divId: any) {
 ///*** Others */
 
 /// Draw chart
-const NloChart = memo(({ municipal, barangay }: any) => {
+const NloChart = memo(() => {
+  const { municipality, barangays } = useDropdownContext();
+
+  const municipal = municipality === null ? undefined : municipality.field1;
+  const barangay = barangays === null ? undefined : barangays.name;
+
   const pieSeriesRef = useRef<unknown | any | undefined>({});
   const legendRef = useRef<unknown | any | undefined>({});
   const chartRef = useRef<unknown | any | undefined>({});
@@ -114,7 +120,7 @@ const NloChart = memo(({ municipal, barangay }: any) => {
     let inner_label = pieSeries.children.push(
       am5.Label.new(root, {
         text: '[#ffffff]{valueSum}[/]\n[fontSize: 5px; #d3d3d3; verticalAlign: super]FAMILIES[/]',
-        fontSize: 13,
+        fontSize: 18,
         centerX: am5.percent(50),
         centerY: am5.percent(40),
         populateText: true,
