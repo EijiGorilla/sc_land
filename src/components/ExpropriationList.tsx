@@ -18,7 +18,12 @@ import {
   CalciteAvatar,
 } from '@esri/calcite-components-react';
 import { view } from '../Scene';
-import { barangayField, lotStatusField, municipalityField } from '../StatusUniqueValues';
+import {
+  barangayField,
+  lotStatusField,
+  lotStatusQuery,
+  municipalityField,
+} from '../StatusUniqueValues';
 import { useDropdownContext } from './DropdownContext';
 
 // Zoom in to selected lot from expropriation list
@@ -53,11 +58,15 @@ const ExpropriationList = () => {
   const municipal = municipality === null ? undefined : municipality.field1;
   const barangay = barangays === null ? undefined : barangays.name;
 
+  // Obtain Status number for 'For Expropriation'
+  const find = lotStatusQuery.filter((e) => e.category.includes('Expropriation'));
+  const statusExproValue = find[0]?.value;
+
   const [exproItem, setExproItem] = useState<undefined | any>([]);
   const queryMunicipality = `${municipalityField} = '` + municipal + "'";
   const queryBarangay = `${barangayField} = '` + barangay + "'";
   const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
-  const queryExpro = `${lotStatusField} = 5`;
+  const queryExpro = `${lotStatusField} = ${statusExproValue}`;
 
   useEffect(() => {
     setExproItem([]);
