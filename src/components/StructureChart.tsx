@@ -4,7 +4,6 @@ import { view } from '../Scene';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import Query from '@arcgis/core/rest/support/Query';
 import * as am5 from '@amcharts/amcharts5';
-import * as am5xy from '@amcharts/amcharts5/xy';
 import * as am5percent from '@amcharts/amcharts5/percent';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import am5themes_Responsive from '@amcharts/amcharts5/themes/Responsive';
@@ -18,9 +17,6 @@ import { CalciteLabel } from '@esri/calcite-components-react';
 import {
   barangayField,
   municipalityField,
-  primaryLabelColor,
-  structureMoaField,
-  structureMoaQuery,
   structureStatusField,
   structureStatusQuery,
   valueLabelColor,

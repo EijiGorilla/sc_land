@@ -101,7 +101,7 @@ export const structureStatusColorHex = [
   '#0070FF',
   '#FFFF00',
   '#FFAA00',
-  '#FF5349',
+  '#FF5733',
   '#B2BEB5',
 ];
 export const structureStatusColorRgb = [

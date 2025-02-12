@@ -14,23 +14,15 @@ import {
   thousands_separators,
   generateHandedOver,
   zoomToLayer,
-  highlightHandedOverLot,
-  highlightRemove,
 } from '../Query';
 import '../App.css';
 import '@esri/calcite-components/dist/components/calcite-segmented-control';
 import '@esri/calcite-components/dist/components/calcite-segmented-control-item';
 import '@esri/calcite-components/dist/components/calcite-label';
 import '@esri/calcite-components/dist/components/calcite-checkbox';
-import {
-  CalciteLabel,
-  CalciteSegmentedControl,
-  CalciteSegmentedControlItem,
-  CalciteCheckbox,
-} from '@esri/calcite-components-react';
+import { CalciteLabel, CalciteCheckbox } from '@esri/calcite-components-react';
 import {
   barangayField,
-  lotMoaStatusQuery,
   lotPriorityField,
   lotStatusField,
   lotStatusQuery,
