@@ -141,7 +141,7 @@ const StructureChart = memo(() => {
     let inner_label = pieSeries.children.push(
       am5.Label.new(root, {
         text: '[#ffffff]{valueSum}[/]\n[fontSize: 0.5em; #d3d3d3; verticalAlign: super]STRUCTURES[/]',
-        fontSize: '1.5em',
+        fontSize: '1.2em',
         centerX: am5.percent(50),
         centerY: am5.percent(40),
         populateText: true,
