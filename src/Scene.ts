@@ -33,6 +33,7 @@ import {
   tunnelAffectedLotLayer,
   somco_fense_layer,
   cp_break_lines,
+  accessibleLotAreaLayer,
 } from './layers';
 import { highlightLot } from './Query';
 import Zoom from '@arcgis/core/widgets/Zoom';
@@ -63,7 +64,7 @@ const lotGroupLayer = new GroupLayer({
   title: 'Land',
   visible: true,
   visibilityMode: 'independent',
-  layers: [lotLayer, tunnelAffectedLotLayer, pnrLayer],
+  layers: [lotLayer, tunnelAffectedLotLayer, pnrLayer, accessibleLotAreaLayer],
 });
 
 const ngcp6_groupLayer = new GroupLayer({

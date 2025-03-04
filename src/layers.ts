@@ -842,6 +842,33 @@ export const tunnelAffectedLotLayer = new FeatureLayer({
 //   },
 // });
 
+/* contractor accessible layer */
+const accessible_renderer = new SimpleRenderer({
+  symbol: new SimpleFillSymbol({
+    color: 'purple',
+    // style: 'cross',
+    style: 'solid',
+
+    outline: {
+      width: 1,
+      color: 'black',
+    },
+  }),
+});
+export const accessibleLotAreaLayer = new FeatureLayer({
+  portalItem: {
+    id: '4692e76be5804db2b38c23df86c7eaa8',
+    portal: {
+      url: 'https://gis.railway-sector.com/portal',
+    },
+  },
+  renderer: accessible_renderer,
+  title: 'Accessible Lot Area',
+  elevationInfo: {
+    mode: 'on-the-ground',
+  },
+});
+
 /* Structure Layer */
 const height = 5;
 const edgeSize = 0.3;
