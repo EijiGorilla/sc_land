@@ -5,8 +5,6 @@ import { view } from './Scene';
 import {
   nloStatusLabel,
   nloStatusQuery,
-  lotMoaField,
-  lotMoaStatus,
   lotStatusField,
   lotStatusLabel,
   lotStatusQuery,
@@ -17,7 +15,6 @@ import {
   structureStatusField,
   structureStatusLabel,
   structureStatusQuery,
-  lotHandedOverDateField,
   lotHandedOverAreaField,
   handedOverLotField,
   lotPriorityField,
@@ -200,64 +197,32 @@ export async function generateHandedOver() {
   });
 }
 
-export async function generateLotMoaData(priority: any, municipal: any, barangay: any) {
+export async function generateHandedOverArea(municipal: any, barangay: any) {
   // Query
-  const queryPriority = `${lotPriorityField} = '` + priority + "'";
   const queryMunicipality = `${municipalityField} = '` + municipal + "'";
-  const queryPriorityMunicipality = queryPriority + ' AND ' + queryMunicipality;
   const queryBarangay = `${barangayField} = '` + barangay + "'";
   const queryMunicipalBarangay = queryMunicipality + ' AND ' + queryBarangay;
-  const queryPriorityMunicipalBarangay = queryPriorityMunicipality + ' AND ' + queryBarangay;
-  const queryField = lotStatusField + ' IS NOT NULL';
+  const queryField = `${affectedAreaField} IS NOT NULL` + ' AND ' + `${lotStatusField} IS NOT NULL`;
 
-  var total_count = new StatisticDefinition({
-    onStatisticField: lotMoaField,
-    outStatisticFieldName: 'total_count',
-    statisticType: 'count',
+  var handed_over_area = new StatisticDefinition({
+    onStatisticField: lotHandedOverAreaField,
+    outStatisticFieldName: 'handed_over_area',
+    statisticType: 'sum',
   });
 
   var query = lotLayer.createQuery();
-  query.outFields = [lotMoaField];
-  query.outStatistics = [total_count];
-  query.orderByFields = [lotMoaField];
-  query.groupByFieldsForStatistics = [lotMoaField];
+  query.outStatistics = [handed_over_area];
 
-  if (priority === 'None') {
-    if (!municipal) {
-      query.where = '1=1';
-    } else if (municipal && !barangay) {
-      query.where = queryField + ' AND ' + queryMunicipality;
-    } else if (municipal && barangay) {
-      query.where = queryField + ' AND ' + queryMunicipalBarangay;
-    }
-  } else if (priority !== 'None') {
-    if (!municipal) {
-      query.where = queryField + ' AND ' + queryPriority;
-    } else if (municipal && !barangay) {
-      query.where = queryField + ' AND ' + queryPriorityMunicipality;
-    } else if (municipal && barangay) {
-      query.where = queryField + ' AND ' + queryPriorityMunicipalBarangay;
-    }
+  if (municipal && !barangay) {
+    query.where = queryField + ' AND ' + queryMunicipality + ' AND ' + queryField;
+  } else if (barangay) {
+    query.where = queryField + ' AND ' + queryMunicipalBarangay + ' AND ' + queryField;
   }
-  return lotLayer.queryFeatures(query).then((response: any) => {
-    var stats = response.features;
-    const data = stats.map((result: any, index: any) => {
-      const attributes = result.attributes;
-      const status_id = attributes.MoA;
-      const count = attributes.total_count;
-      return Object.assign({
-        category: lotMoaStatus[status_id - 1],
-        value: count,
-      });
-    });
 
-    const data1: any = [];
-    lotMoaStatus.map((status: any, index: any) => {
-      const find = data.find((emp: any) => emp.category === status);
-      const value = find === undefined ? 0 : find?.value;
-      data1.push({ category: status, value: value });
-    });
-    return data1;
+  return lotLayer.queryFeatures(query).then((response: any) => {
+    var stats = response.features[0].attributes;
+    const value = stats.handed_over_area;
+    return value;
   });
 }
 

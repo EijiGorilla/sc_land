@@ -862,8 +862,9 @@ export const accessibleLotAreaLayer = new FeatureLayer({
       url: 'https://gis.railway-sector.com/portal',
     },
   },
+
   renderer: accessible_renderer,
-  title: 'Accessible Lot Area',
+  title: 'Handed-Over Area',
   elevationInfo: {
     mode: 'on-the-ground',
   },

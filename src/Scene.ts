@@ -148,7 +148,8 @@ export const layerList = new LayerList({
     item.title === 'Occupancy (Structure)' ||
     item.title === 'Proposed Pole Working Areas' ||
     item.title === 'Proposed/Recorded NGCP Lines' ||
-    item.title === 'Proposed Pole Relocation'
+    item.title === 'Proposed Pole Relocation' ||
+    item.title === 'Handed-Over Area'
       ? (item.visible = false)
       : (item.visible = true);
   },
