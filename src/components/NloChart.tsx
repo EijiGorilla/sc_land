@@ -110,7 +110,7 @@ const NloChart = memo(() => {
         legendValueText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
         radius: am5.percent(45), // outer radius
         innerRadius: am5.percent(28),
-        scale: 2.1,
+        scale: 1.8,
       }),
     );
     pieSeriesRef.current = pieSeries;
@@ -304,7 +304,7 @@ const NloChart = memo(() => {
       <div
         id={chartID}
         style={{
-          height: '45vh',
+          height: '50vh',
           backgroundColor: 'rgb(0,0,0,0)',
           color: 'white',
           marginBottom: '-1.5vh',

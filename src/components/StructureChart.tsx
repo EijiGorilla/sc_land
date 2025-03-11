@@ -531,7 +531,7 @@ const StructureChart = memo(() => {
       <div
         id={chartID}
         style={{
-          height: '47vh',
+          height: '55vh',
           backgroundColor: 'rgb(0,0,0,0)',
           color: 'white',
           marginBottom: '7%',
