@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import DropdownListDisplay from './DropdownContext';
 import { dateUpdate } from '../Query';
+import { updatedDateCategoryNames } from '../StatusUniqueValues';
 
 function Header() {
   const [asOfDate, setAsOfDate] = useState<undefined | any | unknown>(null);
 
   useEffect(() => {
-    dateUpdate().then((response: any) => {
+    dateUpdate(updatedDateCategoryNames[0]).then((response: any) => {
       setAsOfDate(response);
     });
   }, []);

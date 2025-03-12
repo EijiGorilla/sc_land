@@ -1,3 +1,7 @@
+// Updated Dates
+export const updatedDateCategoryNames = ['Land Acquisition', 'Structure', 'Non Land Owner'];
+export const cutoff_days = 30;
+
 // Lot fields definitions
 export const lotHandOverDateField = 'HandOverDate';
 export const lotTargetActualField = 'TargetActual';
