@@ -8,7 +8,7 @@ function Header() {
 
   useEffect(() => {
     dateUpdate(updatedDateCategoryNames[0]).then((response: any) => {
-      setAsOfDate(response);
+      setAsOfDate(response[0][0]);
     });
   }, []);
 
