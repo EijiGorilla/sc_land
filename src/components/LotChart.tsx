@@ -14,6 +14,7 @@ import {
   generateHandedOver,
   zoomToLayer,
   generateHandedOverArea,
+  dateUpdate,
 } from '../Query';
 import '../App.css';
 import '@esri/calcite-components/dist/components/calcite-segmented-control';
@@ -23,11 +24,13 @@ import '@esri/calcite-components/dist/components/calcite-checkbox';
 import { CalciteLabel, CalciteCheckbox } from '@esri/calcite-components-react';
 import {
   barangayField,
+  cutoff_days,
   lotPriorityField,
   lotStatusField,
   lotStatusQuery,
   municipalityField,
   primaryLabelColor,
+  updatedDateCategoryNames,
   valueLabelColor,
 } from '../StatusUniqueValues';
 import { useDropdownContext } from './DropdownContext';
@@ -48,6 +51,16 @@ const LotChart = () => {
 
   const municipal = municipality === null ? undefined : municipality.field1;
   const barangay = barangays === null ? undefined : barangays.name;
+
+  // 0. Updated date
+  const [asOfDate, setAsOfDate] = useState<undefined | any | unknown>(null);
+  const [daysPass, setDaysPass] = useState<boolean>(false);
+  useEffect(() => {
+    dateUpdate(updatedDateCategoryNames[0]).then((response: any) => {
+      setAsOfDate(response[0][0]);
+      setDaysPass(response[0][1] >= cutoff_days ? true : false);
+    });
+  }, []);
 
   // Add zoomToLayer in App component, not LotChart component
   useEffect(() => {
@@ -414,6 +427,18 @@ const LotChart = () => {
             );
           })}
       </CalciteSegmentedControl> */}
+
+      <div
+        style={{
+          color: daysPass === true ? 'red' : 'gray',
+          fontSize: '0.8rem',
+          float: 'right',
+          marginRight: '5px',
+          marginTop: '5px',
+        }}
+      >
+        {!asOfDate ? '' : 'As of ' + asOfDate}
+      </div>
 
       {/* Lot Chart */}
       <div

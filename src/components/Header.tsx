@@ -1,17 +1,6 @@
-import { useEffect, useState } from 'react';
 import DropdownListDisplay from './DropdownContext';
-import { dateUpdate } from '../Query';
-import { updatedDateCategoryNames } from '../StatusUniqueValues';
 
 function Header() {
-  const [asOfDate, setAsOfDate] = useState<undefined | any | unknown>(null);
-
-  useEffect(() => {
-    dateUpdate(updatedDateCategoryNames[0]).then((response: any) => {
-      setAsOfDate(response[0][0]);
-    });
-  }, []);
-
   return (
     <>
       <header
@@ -34,7 +23,6 @@ function Header() {
           style={{ marginBottom: 'auto', marginTop: 'auto' }}
         />
         <b className="headerTitle">SC LAND ACQUISITION</b>
-        <div className="date">{!asOfDate ? '' : 'As of ' + asOfDate}</div>
 
         {/* Dropdown component */}
         <DropdownListDisplay />
